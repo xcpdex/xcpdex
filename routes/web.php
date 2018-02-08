@@ -14,3 +14,28 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/asset/{asset}', [
+    'as'   => 'assets.show',
+    'uses' => 'AssetsController@show',
+]);
+
+Route::get('/address/{address}', [
+    'as'   => 'addresses.show',
+    'uses' => 'AddressesController@show',
+]);
+
+Route::get('/txstats', [
+    'as'   => 'txstats.show',
+    'uses' => 'TxStatsController@show',
+]);
+
+Route::get('/stats', [
+    'as'   => 'txstats.index',
+    'uses' => 'TxStatsController@index',
+]);
+
+Route::get('/test', [
+    'as'   => 'test',
+    'uses' => 'TestController@show',
+]);
