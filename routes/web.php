@@ -11,31 +11,26 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::get('/asset/{asset}', [
-    'as'   => 'assets.show',
-    'uses' => 'AssetsController@show',
+Route::get('/markets', [
+    'as' => 'markets.index',
+    'uses' => 'MarketsController@index',
 ]);
 
 Route::get('/address/{address}', [
-    'as'   => 'addresses.show',
+    'as' => 'addresses.show',
     'uses' => 'AddressesController@show',
 ]);
 
-Route::get('/txstats', [
-    'as'   => 'txstats.show',
-    'uses' => 'TxStatsController@show',
+Route::get('/tx/{tx_hash}', [
+    'as' => 'orders.show',
+    'uses' => 'OrdersController@show',
 ]);
 
-Route::get('/stats', [
-    'as'   => 'txstats.index',
-    'uses' => 'TxStatsController@index',
-]);
+Auth::routes();
 
-Route::get('/test', [
-    'as'   => 'test',
-    'uses' => 'TestController@show',
+Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('/{market}', [
+    'as' => 'markets.show',
+    'uses' => 'MarketsController@show',
 ]);

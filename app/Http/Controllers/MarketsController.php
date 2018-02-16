@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class AddressesController extends Controller
+class MarketsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -47,9 +47,9 @@ class AddressesController extends Controller
      */
     public function show($slug)
     {
-        $orders = \App\Order::whereSource($slug)->with('block', 'market')->orderBy('tx_index', 'desc')->get();
+        $market = \App\Market::whereSlug($slug)->firstOrFail();
 
-        return view('addresses.show', compact('slug', 'orders'));
+        return view('markets.show', compact('market'));
     }
 
     /**

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
-class AddressesController extends Controller
+class OrdersController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -13,9 +13,9 @@ class AddressesController extends Controller
      */
     public function index()
     {
-        $markets = \App\Market::withCount('orders')->orderBy('orders_count', 'desc')->paginate(100);
+        $markets = \App\Market::withCount('orders', 'orderMatches')->paginate(100);
 
-        return view('markets.index', compact('markets'));
+        return $markets;
     }
 
     /**
@@ -47,9 +47,17 @@ class AddressesController extends Controller
      */
     public function show($slug)
     {
-        $orders = \App\Order::whereSource($slug)->with('block', 'market')->orderBy('tx_index', 'desc')->get();
+        $market = \App\Market::whereSlug($slug)->with('baseAsset', 'quoteAsset')->firstOrFail();
 
-        return view('addresses.show', compact('slug', 'orders'));
+        $buy_orders = $market->orders()->whereType('buy')->whereStatus('open')->where('expire_index', '>', \Cache::get('block_height'))->orderBy('exchange_rate', 'desc')->orderBy('tx_index', 'desc')->get();
+        $sell_orders = $market->orders()->whereType('sell')->whereStatus('open')->where('expire_index', '>', \Cache::get('block_height'))->orderBy('exchange_rate', 'asc')->orderBy('tx_index', 'desc')->get();
+
+        return [
+            'base_asset' => $market->baseAsset,
+            'quote_asset' => $market->quoteAsset,
+            'buy_orders' => \App\Http\Resources\OrderResource::collection($buy_orders),
+            'sell_orders' => \App\Http\Resources\OrderResource::collection($sell_orders),
+        ];
     }
 
     /**

@@ -13,16 +13,12 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        Commands\XcpHex::class,
-        Commands\XcpFees::class,
-        Commands\XcpTime::class,
-        Commands\XcpCents::class,
-        Commands\XcpDaily::class,
-        Commands\XcpExport::class,
-        Commands\XcpUpdate::class,
-        Commands\XcpScrape::class,
-        Commands\XcpMonthly::class,
-        Commands\TradeHistory::class,
+        Commands\BlockHeightCommand::class,
+        Commands\FetchAssetsCommand::class,
+        Commands\FetchMarketsCommand::class,
+        Commands\UpdateAssetsCommand::class,
+        Commands\UpdateBlocksCommand::class,
+        Commands\UpdateMarketsCommand::class,
     ];
 
     /**
