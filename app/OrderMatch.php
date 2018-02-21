@@ -12,7 +12,7 @@ class OrderMatch extends Model
      * @var array
      */
     protected $fillable = [
-         'order_id', 'order_match_id', 'base_quantity', 'quote_quantity',
+         'market_id', 'order_id', 'order_match_id', 'tx_index', 'base_quantity', 'quote_quantity',
     ];
 
     /**

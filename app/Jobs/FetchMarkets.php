@@ -32,44 +32,24 @@ class FetchMarkets implements ShouldQueue
      */
     public function handle()
     {
-        $quote_asset = \App\Asset::whereName('XCP')->first();
-
         $offset = 0;
 
         while($offset <= 1200000)
         {
-        $buys = $this->counterparty->execute('get_orders', [
-            'filters' => [
-                [
-                    'field' => 'give_asset',
-                    'op'    => '==',
-                    'value' => $quote_asset->name,
-                ],
-            ],
-            'offset' => $offset,
-        ]);
+            $orders = $this->counterparty->execute('get_orders', [
+                'offset' => $offset,
+            ]);
 
-        $sells = $this->counterparty->execute('get_orders', [
-            'filters' => [
-                [
-                    'field' => 'get_asset',
-                    'op'    => '==',
-                    'value' => $quote_asset->name,
-                ],
-            ],
-            'offset' => $offset,
-        ]);
+            if(0 == count($orders)) break;
 
-        if(0 == count($buys) + count($sells)) break;
-
-        foreach([$buys, $sells] as $orders)
-        {
             foreach($orders as $order)
             {
-                $asset_name = $quote_asset->name !== $order['get_asset'] ? $order['get_asset'] : $order['give_asset'];
-                $base_asset = \App\Asset::whereName($asset_name)->first();
+                $asset_pair = $this->assets_to_asset_pair($order['get_asset'], $order['give_asset']);
 
-                if(! $base_asset) continue;
+                $base_asset = \App\Asset::whereName($asset_pair[0])->first();
+                $quote_asset = \App\Asset::whereName($asset_pair[1])->first();
+
+                if(! $base_asset || ! $quote_asset) continue;
 
                 $market = \App\Market::firstOrCreate([
                     'base_asset_id'  => $base_asset->id,
@@ -84,8 +64,26 @@ class FetchMarkets implements ShouldQueue
                     \App\Jobs\UpdateMarket::dispatch($market);
                 }
             }
+
+            $offset = $offset + 1000;
         }
-        $offset = $offset + 1000;
+    }
+
+    private function assets_to_asset_pair($asset1, $asset2)
+    {
+        foreach($this->quote_assets() as $quote_asset)
+        {
+            if($asset1 == $quote_asset || $asset2 == $quote_asset)
+            {
+                return $asset1 == $quote_asset ? [$asset2, $asset1] : [$asset1, $asset2];
+            }
         }
+
+        return $asset1 < $asset2 ? [$asset1, $asset2] : [$asset2, $asset1];
+    }
+
+    private function quote_assets()
+    {
+        return ['BTC', 'XCP', 'XBTC', 'SJCX', 'PEPECASH', 'BITCRYSTALS', 'WILLCOIN', 'FLDC', 'LTBCOIN', 'RUSTBITS', 'DATABITS'];
     }
 }

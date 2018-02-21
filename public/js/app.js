@@ -57369,7 +57369,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   },
 
   methods: {
-    subtotal: function subtotal(index) {
+    baseSubtotal: function baseSubtotal(index) {
+      return this.orders.slice(0, index + 1).reduce(function (sum, order) {
+        return sum + parseFloat(order.base_remaining_normalized);
+      }, 0).toFixed(8);
+    },
+    quoteSubtotal: function quoteSubtotal(index) {
       return this.orders.slice(0, index + 1).reduce(function (sum, order) {
         return sum + parseFloat(order.quote_remaining_normalized);
       }, 0).toFixed(8);
@@ -57396,7 +57401,7 @@ var render = function() {
           _vm._v(" "),
           _c("th", [_vm._v(_vm._s(_vm.quoteAsset))]),
           _vm._v(" "),
-          _c("th", [_vm._v("Sum (" + _vm._s(_vm.quoteAsset) + ")")]),
+          _c("th", [_vm._v("Sum (" + _vm._s(_vm.quoteAsset) + ")")]),
           _vm._v(" "),
           _c("th", [_vm._v("Source")])
         ])
@@ -57424,9 +57429,16 @@ var render = function() {
                 _vm._v(_vm._s(order.quote_remaining_normalized))
               ]),
               _vm._v(" "),
-              _c("td", { staticClass: "text-right" }, [
-                _vm._v(_vm._s(_vm.subtotal(index)))
-              ]),
+              _c(
+                "td",
+                {
+                  staticClass: "text-right",
+                  attrs: {
+                    title: _vm.baseSubtotal(index) + " " + _vm.baseAsset
+                  }
+                },
+                [_vm._v(_vm._s(_vm.quoteSubtotal(index)))]
+              ),
               _vm._v(" "),
               _c("td", [
                 _c(
@@ -57563,7 +57575,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
   data: function data() {
     return {
-      matches: []
+      matches: [],
+      page: 1
     };
   },
 
@@ -57572,12 +57585,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     infiniteHandler: function infiniteHandler($state) {
       var _this = this;
 
-      fetch('/api/matches/' + this.market + '?page=' + this.matches.length / 50 + 1).then(function (response) {
+      fetch('/api/matches/' + this.market + '?page=' + this.page).then(function (response) {
         return response.json().then(function (json) {
+          _this.page = json.current_page + 1;
           if (json.data.length) {
             _this.matches = _this.matches.concat(json.data);
             $state.loaded();
-            if (_this.matches.length === json.total) {
+            if (json.current_page == json.last_page) {
               $state.complete();
             }
           } else {

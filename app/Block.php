@@ -16,6 +16,15 @@ class Block extends Model
     ];
 
     /**
+     * The attributes that are dates.
+     *
+     * @var array
+     */
+    protected $dates = [
+         'block_time',
+    ];
+
+    /**
      * Orders
      * 
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

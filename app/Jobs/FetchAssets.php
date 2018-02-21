@@ -44,5 +44,11 @@ class FetchAssets implements ShouldQueue
             'divisible' => 1,
             'processed' => 1,
         ]);
+
+        \App\Asset::firstOrCreate([
+            'name' => 'BTC',
+            'divisible' => 1,
+            'processed' => 1,
+        ]);
     }
 }

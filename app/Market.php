@@ -28,11 +28,11 @@ class Market extends Model
     /**
      * Order Matches
      * 
-     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function orderMatches()
     {
-        return $this->hasManyThrough(OrderMatch::class, Order::class);
+        return $this->hasMany(OrderMatch::class);
     }
 
     /**

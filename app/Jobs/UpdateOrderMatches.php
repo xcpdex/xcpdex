@@ -80,18 +80,14 @@ class UpdateOrderMatches implements ShouldQueue
                 $order = \App\Order::whereTxIndex($order_match['tx0_index'])->first();
                 $match = \App\Order::whereTxIndex($order_match['tx1_index'])->first();
 
-                if(! $match)
-                {
-                    \Storage::append('tx.log', $order_match['tx1_index']);
-                    continue;
-                }
-
                 $base = 'buy' == $match->type ? 'forward' : 'backward';
                 $quote = 'buy' == $match->type ? 'backward' : 'forward';
 
                 \App\OrderMatch::firstOrCreate([
+                    'market_id' => $this->market->id,
                     'order_id' => $order->id,
                     'order_match_id' => $match->id,
+                    'tx_index' => $order_match['tx1_index'],
                     'base_quantity' => $order_match[$base.'_quantity'],
                     'quote_quantity' => $order_match[$quote.'_quantity'],
                 ]);

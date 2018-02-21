@@ -31,13 +31,45 @@ class HighChartsController extends Controller
 
         if(! $data) return [];
 
-        foreach($data as $row)
+        foreach($data as $key => $row)
         {
             $history[] = [
                 $row['interval_time'],
                 $row['midline'],
                 round($row['vol'] * $row['midline']),
             ];
+
+            if(isset($data[$key + 1]) && $data[$key + 1]['interval_time'] - $row['interval_time'] > 3600000)
+            {
+                $timestamp = $row['interval_time'] + 3600000;
+
+                while($timestamp <= $data[$key + 1]['interval_time'])
+                {
+                    $history[] = [
+                        $timestamp,
+                        $row['midline'],
+                        0,
+                    ];
+                    $timestamp = $timestamp + 3600000;
+                }
+            }
+        }
+
+        $last = end($data);
+
+        if(\Carbon\Carbon::now()->timestamp * 1000 - $last['interval_time'] > 3600000)
+        {
+            $timestamp = $last['interval_time'] + 3600000;
+
+            while($timestamp <= \Carbon\Carbon::now()->timestamp * 1000)
+            {
+                $history[] = [
+                    $timestamp,
+                    $last['midline'],
+                    0,
+                ];
+                $timestamp = $timestamp + 3600000;
+            }
         }
 
         return $history;

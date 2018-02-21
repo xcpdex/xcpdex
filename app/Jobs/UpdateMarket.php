@@ -89,7 +89,6 @@ class UpdateMarket implements ShouldQueue
                     'expire_index' => $order['expire_index'],
                     'tx_index' => $order['tx_index'],
                     'tx_hash' => $order['tx_hash'],
-                    'exchange_rate' => $this->getExchangeRate($type, $base_asset, $quote_asset, $order[$base.'_quantity'], $order[$quote.'_quantity']),
                     'fee_paid' => $order['fee_provided'],
                     'duration' => $order['expiration'],
                 ],[
@@ -98,6 +97,7 @@ class UpdateMarket implements ShouldQueue
                     'base_remaining' => $order[$base.'_remaining'],
                     'quote_quantity' => $order[$quote.'_quantity'],
                     'quote_remaining' => $order[$quote.'_remaining'],
+                    'exchange_rate' => $this->getExchangeRate($type, $base_asset, $order[$base.'_quantity'], $order[$quote.'_quantity']),
                 ]);
             }
         }
@@ -107,7 +107,7 @@ class UpdateMarket implements ShouldQueue
         \App\Jobs\UpdateOrderMatches::dispatch($this->market);
     }
 
-    private function getExchangeRate($type, $base_asset, $quote_asset, $base_quantity, $quote_quantity)
+    private function getExchangeRate($type, $base_asset, $base_quantity, $quote_quantity)
     {
         if($base_quantity == 0) return 0;
 

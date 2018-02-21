@@ -11,9 +11,29 @@
 |
 */
 
+Route::get('/assets', [
+    'as' => 'assets.index',
+    'uses' => 'AssetsController@index',
+]);
+
 Route::get('/markets', [
     'as' => 'markets.index',
     'uses' => 'MarketsController@index',
+]);
+
+Route::get('/market/{market}', [
+    'as' => 'markets.show',
+    'uses' => 'MarketsController@show',
+]);
+
+Route::get('/matches', [
+    'as' => 'matches.index',
+    'uses' => 'OrderMatchesController@index',
+]);
+
+Route::get('/orders', [
+    'as' => 'orders.index',
+    'uses' => 'OrdersController@index',
 ]);
 
 Route::get('/address/{address}', [
@@ -30,7 +50,7 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::get('/{market}', [
-    'as' => 'markets.show',
-    'uses' => 'MarketsController@show',
+Route::get('{asset}', [
+    'as' => 'assets.show',
+    'uses' => 'AssetsController@show',
 ]);

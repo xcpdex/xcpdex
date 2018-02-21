@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class OrdersController extends Controller
+class AssetsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -13,9 +13,9 @@ class OrdersController extends Controller
      */
     public function index()
     {
-        $orders = \App\Order::orderBy('tx_index', 'desc')->paginate(100);
+        $assets = \App\Asset::withCount('baseMarkets', 'quoteMarkets')->orderBy('quote_markets_count', 'desc')->paginate(500);
 
-        return view('orders.index', compact('orders'));
+        return view('assets.index', compact('assets'));
     }
 
     /**
@@ -47,9 +47,19 @@ class OrdersController extends Controller
      */
     public function show($slug)
     {
-        $order = \App\Order::whereTxHash($slug)->with('market', 'orderMatches')->first();
+        $asset = \App\Asset::whereName($slug)->first();
 
-        return view('orders.show', compact('order'));
+        $subassets = \App\Asset::subassets($asset->name)->get();
+
+        $markets = \App\Market::where('base_asset_id', '=', $asset->id)
+            ->orWhere('quote_asset_id', '=', $asset->id)
+            ->has('orderMatches')
+            ->withCount('orders', 'orderMatches')
+            ->orderBy('order_matches_count', 'desc')
+            ->orderBy('orders_count', 'desc')
+            ->get();
+
+        return view('assets.show', compact('asset', 'subassets', 'markets'));
     }
 
     /**

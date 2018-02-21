@@ -47,9 +47,20 @@ class MarketsController extends Controller
      */
     public function show($slug)
     {
-        $market = \App\Market::whereSlug($slug)->firstOrFail();
+        $market = \App\Market::whereSlug($slug)
+            ->with('baseAsset', 'quoteAsset')
+            ->withCount('orders', 'orderMatches')
+            ->firstOrFail();
 
-        return view('markets.show', compact('market'));
+        $last_match = $market->orderMatches()
+            ->orderBy('tx_index', 'desc')
+            ->first();
+
+        $last_order = $market->orders()
+            ->orderBy('tx_index', 'desc')
+            ->first();
+
+        return view('markets.show', compact('market', 'last_match', 'last_order'));
     }
 
     /**

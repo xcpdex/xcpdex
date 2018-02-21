@@ -39,7 +39,8 @@ class UpdateBlock implements ShouldQueue
         \App\Block::firstOrCreate([
             'block_index' => $block_info['block_index'],
             'block_hash' => $block_info['block_hash'],
-            'block_time' => \Carbon\Carbon::createFromTimestampUTC($block_info['block_time']),
+        ],[
+            'block_time' => \Carbon\Carbon::createFromTimestamp($block_info['block_time'], 'America/New_York'),
         ]);
     }
 }

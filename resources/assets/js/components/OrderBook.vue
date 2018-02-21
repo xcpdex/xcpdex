@@ -6,7 +6,7 @@
         <th>Price</th>
         <th>{{ baseAsset }}</th>
         <th>{{ quoteAsset }}</th>
-        <th>Sum ({{ quoteAsset }})</th>
+        <th>Sum&nbsp;({{ quoteAsset }})</th>
         <th>Source</th>
       </tr>
     </thead>
@@ -15,7 +15,7 @@
         <td class="text-right" :class="order.type == 'buy' ? 'text-success' : 'text-danger'">{{ order.exchange_rate }}</td>
         <td class="text-right">{{ order.base_remaining_normalized }}</td>
         <td class="text-right">{{ order.quote_remaining_normalized }}</td>
-        <td class="text-right">{{ subtotal(index) }}</td>
+        <td class="text-right" :title="baseSubtotal(index) + ' ' + baseAsset">{{ quoteSubtotal(index) }}</td>
         <td><a :href="'http://xcpdex.com/address/' + order.source">{{ order.source }}</a></td>
       </tr>
       <tr v-if="orders.length == 0">
@@ -51,7 +51,10 @@
     },
 
     methods: {
-      subtotal: function (index) {
+      baseSubtotal: function (index) {
+        return this.orders.slice(0,index+1).reduce((sum, order) => sum + parseFloat(order.base_remaining_normalized), 0).toFixed(8)
+      },
+      quoteSubtotal: function (index) {
         return this.orders.slice(0,index+1).reduce((sum, order) => sum + parseFloat(order.quote_remaining_normalized), 0).toFixed(8)
       }
     },

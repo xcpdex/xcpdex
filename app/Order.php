@@ -104,4 +104,13 @@ class Order extends Model
     {
         return $this->hasMany(OrderMatch::class, 'order_match_id');
     }
+
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeOpen($query)
+    {
+        return $query->whereStatus('open');
+    }
 }

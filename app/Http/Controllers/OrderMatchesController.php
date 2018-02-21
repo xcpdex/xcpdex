@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class OrdersController extends Controller
+class OrderMatchesController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -13,9 +13,9 @@ class OrdersController extends Controller
      */
     public function index()
     {
-        $orders = \App\Order::orderBy('tx_index', 'desc')->paginate(100);
+        $matches = \App\OrderMatch::orderBy('tx_index', 'desc')->paginate(100);
 
-        return view('orders.index', compact('orders'));
+        return view('matches.index', compact('matches'));
     }
 
     /**
@@ -47,7 +47,7 @@ class OrdersController extends Controller
      */
     public function show($slug)
     {
-        $order = \App\Order::whereTxHash($slug)->with('market', 'orderMatches')->first();
+        $order = \App\Order::whereTxHash($slug)->first();
 
         return view('orders.show', compact('order'));
     }

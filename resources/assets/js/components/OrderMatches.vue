@@ -41,17 +41,19 @@
     data () {
       return {
         matches: [],
+        page: 1,
       }
     },
 
     methods: {
       infiniteHandler($state) {
-        fetch('/api/matches/' + this.market + '?page=' + this.matches.length / 50 + 1).then((response) => {
+        fetch('/api/matches/' + this.market + '?page=' + this.page).then((response) => {
           return response.json().then((json) => {
+            this.page = json.current_page + 1
             if (json.data.length) {
               this.matches = this.matches.concat(json.data);
               $state.loaded();
-              if (this.matches.length === json.total) {
+              if (json.current_page == json.last_page) {
                 $state.complete();
               }
             } else {
