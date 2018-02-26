@@ -13,7 +13,7 @@ class AssetsController extends Controller
      */
     public function index()
     {
-        $assets = \App\Asset::withCount('baseMarkets', 'quoteMarkets')->orderBy('quote_markets_count', 'desc')->paginate(500);
+        $assets = \App\Asset::withCount('baseMarkets', 'quoteMarkets')->orderBy('base_markets_count', 'desc')->paginate(500);
 
         return view('assets.index', compact('assets'));
     }
@@ -49,17 +49,42 @@ class AssetsController extends Controller
     {
         $asset = \App\Asset::whereName($slug)->first();
 
-        $subassets = \App\Asset::subassets($asset->name)->get();
+        // $subassets = \App\Asset::subassets($asset->name)->get();
 
-        $markets = \App\Market::where('base_asset_id', '=', $asset->id)
+        $daily_block = \App\Block::has('orders')->orderBy('block_time', '')->first();
+        $month_block = \App\Block::has('orders')->where('block_time', '>', $daily_block->block_time->subDays(30))->first();
+
+        $daily = $daily_block->orders()->first();
+        $month = $month_block->orders()->first();
+
+        $daily_volume = $asset->baseMarketsOrderMatches()->where('tx_index', '>', $daily->tx_index)->sum('base_quantity') + $asset->quoteMarketsOrderMatches()->where('tx_index', '>', $daily->tx_index)->sum('quote_quantity');
+        $month_volume = $asset->baseMarketsOrderMatches()->where('tx_index', '>', $month->tx_index)->sum('base_quantity') + $asset->quoteMarketsOrderMatches()->where('tx_index', '>', $month->tx_index)->sum('quote_quantity');
+
+        $active_markets = \App\Market::where('base_asset_id', '=', $asset->id)
+            ->has('orderMatches')
+            ->has('openOrders')
             ->orWhere('quote_asset_id', '=', $asset->id)
             ->has('orderMatches')
-            ->withCount('orders', 'orderMatches')
-            ->orderBy('order_matches_count', 'desc')
+            ->has('openOrders')
+            ->with('lastMatch', 'highestOpenBuyOrder', 'lowestOpenSellOrder')
+            ->withCount('orders', 'orderMatches', 'openOrders')
+            ->orderBy('open_orders_count', 'desc')
             ->orderBy('orders_count', 'desc')
-            ->get();
+            ->paginate(5000);
 
-        return view('assets.show', compact('asset', 'subassets', 'markets'));
+        $inactive_markets = \App\Market::where('base_asset_id', '=', $asset->id)
+            ->has('orderMatches')
+            ->has('openOrders', '=', 0)
+            ->orWhere('quote_asset_id', '=', $asset->id)
+            ->has('orderMatches')
+            ->has('openOrders', '=', 0)
+            ->with('lastMatch')
+            ->withCount('orders', 'orderMatches', 'openOrders')
+            ->orderBy('orders_count', 'desc')
+            ->orderBy('order_matches_count', 'desc')
+            ->paginate(5000);
+
+        return view('assets.show', compact('asset', 'daily_volume', 'month_volume', 'active_markets', 'inactive_markets'));
     }
 
     /**

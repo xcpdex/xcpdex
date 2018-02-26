@@ -53,10 +53,12 @@ class MarketsController extends Controller
             ->firstOrFail();
 
         $last_match = $market->orderMatches()
+            ->has('order.block')
             ->orderBy('tx_index', 'desc')
             ->first();
 
         $last_order = $market->orders()
+            ->has('block')
             ->orderBy('tx_index', 'desc')
             ->first();
 

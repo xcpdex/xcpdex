@@ -34,13 +34,15 @@ class UpdateBlock implements ShouldQueue
      */
     public function handle()
     {
-        $block_info = $this->counterparty->execute('get_block_info', ['block_index' => $this->block_index]);
+        if(! \App\Block::whereBlockIndex($this->block_index)->exists())
+        {
+            $block_info = $this->counterparty->execute('get_block_info', ['block_index' => $this->block_index]);
 
-        \App\Block::firstOrCreate([
-            'block_index' => $block_info['block_index'],
-            'block_hash' => $block_info['block_hash'],
-        ],[
-            'block_time' => \Carbon\Carbon::createFromTimestamp($block_info['block_time'], 'America/New_York'),
-        ]);
+            \App\Block::create([
+                'block_index' => $block_info['block_index'],
+                'block_hash' => $block_info['block_hash'],
+                'block_time' => \Carbon\Carbon::createFromTimestamp($block_info['block_time'], 'America/New_York'),
+            ]);
+        }
     }
 }

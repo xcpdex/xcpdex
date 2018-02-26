@@ -13,7 +13,7 @@ class OrderMatchesController extends Controller
      */
     public function index()
     {
-        $matches = \App\OrderMatch::orderBy('tx_index', 'desc')->paginate(100);
+        $matches = \App\OrderMatch::has('orderMatch.block')->orderBy('tx_index', 'desc')->paginate(100);
 
         return view('matches.index', compact('matches'));
     }

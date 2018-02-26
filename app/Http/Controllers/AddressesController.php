@@ -13,9 +13,9 @@ class AddressesController extends Controller
      */
     public function index()
     {
-        $markets = \App\Market::withCount('orders')->orderBy('orders_count', 'desc')->paginate(100);
+        return \App\Order::select('source')->with('block', 'market')->groupBy('source')->paginate(100);
 
-        return view('markets.index', compact('markets'));
+        return view('addresses.index', compact('addresses'));
     }
 
     /**

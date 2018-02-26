@@ -57341,6 +57341,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
 
@@ -57391,79 +57401,106 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "table-responsive order-book" }, [
-    _c("table", { staticClass: "table table-striped table-sm" }, [
-      _c("thead", { staticClass: "text-left" }, [
-        _c("tr", [
-          _c("th", [_vm._v("Price")]),
-          _vm._v(" "),
-          _c("th", [_vm._v(_vm._s(_vm.baseAsset))]),
-          _vm._v(" "),
-          _c("th", [_vm._v(_vm._s(_vm.quoteAsset))]),
-          _vm._v(" "),
-          _c("th", [_vm._v("Sum (" + _vm._s(_vm.quoteAsset) + ")")]),
-          _vm._v(" "),
-          _c("th", [_vm._v("Source")])
-        ])
-      ]),
-      _vm._v(" "),
-      _c(
-        "tbody",
-        [
-          _vm._l(_vm.orders, function(order, index) {
-            return _c("tr", [
-              _c(
-                "td",
-                {
-                  staticClass: "text-right",
-                  class: order.type == "buy" ? "text-success" : "text-danger"
-                },
-                [_vm._v(_vm._s(order.exchange_rate))]
-              ),
-              _vm._v(" "),
-              _c("td", { staticClass: "text-right" }, [
-                _vm._v(_vm._s(order.base_remaining_normalized))
-              ]),
-              _vm._v(" "),
-              _c("td", { staticClass: "text-right" }, [
-                _vm._v(_vm._s(order.quote_remaining_normalized))
-              ]),
-              _vm._v(" "),
-              _c(
-                "td",
-                {
-                  staticClass: "text-right",
-                  attrs: {
-                    title: _vm.baseSubtotal(index) + " " + _vm.baseAsset
-                  }
-                },
-                [_vm._v(_vm._s(_vm.quoteSubtotal(index)))]
-              ),
-              _vm._v(" "),
-              _c("td", [
-                _c(
-                  "a",
-                  {
-                    attrs: { href: "http://xcpdex.com/address/" + order.source }
-                  },
-                  [_vm._v(_vm._s(order.source))]
-                )
-              ])
-            ])
-          }),
-          _vm._v(" "),
-          _vm.orders.length == 0
-            ? _c("tr", [
+  return _c("div", [
+    _c("div", { staticClass: "table-responsive order-book" }, [
+      _c("table", { staticClass: "table table-striped table-sm" }, [
+        _c("thead", { staticClass: "text-left" }, [
+          _c("tr", [
+            _c("th", [_vm._v("Price")]),
+            _vm._v(" "),
+            _c("th", [_vm._v(_vm._s(_vm.baseAsset))]),
+            _vm._v(" "),
+            _c("th", [_vm._v(_vm._s(_vm.quoteAsset))]),
+            _vm._v(" "),
+            _c("th", [_vm._v("Sum (" + _vm._s(_vm.quoteAsset) + ")")]),
+            _vm._v(" "),
+            _c("th", [_vm._v("Source")])
+          ])
+        ]),
+        _vm._v(" "),
+        _c(
+          "tbody",
+          [
+            _vm._l(_vm.orders, function(order, index) {
+              return _c("tr", [
                 _c(
                   "td",
-                  { staticClass: "text-center", attrs: { colspan: "5" } },
-                  [_vm._v("No " + _vm._s(_vm.side) + " orders found.")]
-                )
+                  {
+                    staticClass: "text-right",
+                    class: order.type == "buy" ? "text-success" : "text-danger",
+                    attrs: { title: order.exchange_rate_usd + " USD" }
+                  },
+                  [_vm._v(_vm._s(order.exchange_rate))]
+                ),
+                _vm._v(" "),
+                _c("td", { staticClass: "text-right" }, [
+                  _vm._v(_vm._s(order.base_remaining_normalized))
+                ]),
+                _vm._v(" "),
+                _c("td", { staticClass: "text-right" }, [
+                  _vm._v(_vm._s(order.quote_remaining_normalized))
+                ]),
+                _vm._v(" "),
+                _c(
+                  "td",
+                  {
+                    staticClass: "text-right",
+                    attrs: {
+                      title: _vm.baseSubtotal(index) + " " + _vm.baseAsset
+                    }
+                  },
+                  [_vm._v(_vm._s(_vm.quoteSubtotal(index)))]
+                ),
+                _vm._v(" "),
+                _c("td", [
+                  _c(
+                    "a",
+                    {
+                      attrs: {
+                        href: "https://xcpdex.com/address/" + order.source
+                      }
+                    },
+                    [_vm._v(_vm._s(order.source))]
+                  )
+                ])
               ])
-            : _vm._e()
-        ],
-        2
-      )
+            }),
+            _vm._v(" "),
+            _vm.orders.length == 0
+              ? _c("tr", [
+                  _c(
+                    "td",
+                    { staticClass: "text-center", attrs: { colspan: "5" } },
+                    [_vm._v("No " + _vm._s(_vm.side) + " orders found.")]
+                  )
+                ])
+              : _vm._e()
+          ],
+          2
+        )
+      ])
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "row mt-1 text-muted" }, [
+      _c("div", { staticClass: "col" }, [
+        _vm._v(
+          "\n    " +
+            _vm._s(_vm.baseSubtotal(_vm.orders.length)) +
+            " " +
+            _vm._s(_vm.baseAsset) +
+            "\n  "
+        )
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col text-right" }, [
+        _vm._v(
+          "\n    " +
+            _vm._s(_vm.quoteSubtotal(_vm.orders.length)) +
+            " " +
+            _vm._s(_vm.quoteAsset) +
+            "\n  "
+        )
+      ])
     ])
   ])
 }
@@ -57636,7 +57673,7 @@ var render = function() {
                   "a",
                   {
                     attrs: {
-                      href: "http://xcpdex.com/tx/" + match.order_match.tx_hash
+                      href: "https://xcpdex.com/tx/" + match.order_match.tx_hash
                     }
                   },
                   [_vm._v(_vm._s(match.order_match.block.block_time))]
@@ -57654,9 +57691,14 @@ var render = function() {
                 [_vm._v(_vm._s(match.order_match.type))]
               ),
               _vm._v(" "),
-              _c("td", { staticClass: "text-right" }, [
-                _vm._v(_vm._s(match.order.exchange_rate))
-              ]),
+              _c(
+                "td",
+                {
+                  staticClass: "text-right",
+                  attrs: { title: match.order.exchange_rate_usd + " USD" }
+                },
+                [_vm._v(_vm._s(match.order.exchange_rate))]
+              ),
               _vm._v(" "),
               _c("td", { staticClass: "text-right" }, [
                 _vm._v(_vm._s(match.base_quantity_normalized))
@@ -57672,7 +57714,7 @@ var render = function() {
                   {
                     attrs: {
                       href:
-                        "http://xcpdex.com/address/" + match.order_match.source
+                        "https://xcpdex.com/address/" + match.order_match.source
                     }
                   },
                   [_vm._v(_vm._s(match.order_match.source))]
@@ -57684,7 +57726,7 @@ var render = function() {
                   "a",
                   {
                     attrs: {
-                      href: "http://xcpdex.com/address/" + match.order.source
+                      href: "https://xcpdex.com/address/" + match.order.source
                     }
                   },
                   [_vm._v(_vm._s(match.order.source))]

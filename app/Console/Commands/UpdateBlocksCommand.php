@@ -42,11 +42,18 @@ class UpdateBlocksCommand extends Command
      */
     public function handle()
     {
-        $blocks = \App\Order::select('block_index')->groupBy('block_index')->get();
+        $last_block = \App\Block::orderBy('block_index', 'desc')->first();
 
-        foreach($blocks as $block)
+        $block_index = $last_block ? $last_block->block_index - 144 : 0;
+
+        $orders = \App\Order::where('block_index', '>', $block_index)
+            ->select('block_index')
+            ->groupBy('block_index')
+            ->get();
+
+        foreach($orders as $order)
         {
-            \App\Jobs\UpdateBlock::dispatch($block->block_index);
+            \App\Jobs\UpdateBlock::dispatch($order->block_index);
         }
     }
 }

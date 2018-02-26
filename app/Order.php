@@ -12,7 +12,7 @@ class Order extends Model
      * @var array
      */
     protected $fillable = [
-         'market_id', 'block_index', 'expire_index', 'tx_index', 'tx_hash', 'source', 'status', 'type', 'base_quantity', 'base_remaining', 'quote_quantity', 'quote_remaining', 'exchange_rate', 'fee_paid', 'duration',
+         'market_id', 'block_index', 'expire_index', 'tx_index', 'tx_hash', 'source', 'status', 'type', 'base_quantity', 'base_remaining', 'quote_quantity', 'quote_remaining', 'exchange_rate', 'exchange_rate_usd', 'fee_paid', 'duration',
     ];
 
     /**
@@ -112,5 +112,23 @@ class Order extends Model
     public function scopeOpen($query)
     {
         return $query->whereStatus('open');
+    }
+
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeBuys($query)
+    {
+        return $query->whereType('buy');
+    }
+
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeSells($query)
+    {
+        return $query->whereType('sell');
     }
 }

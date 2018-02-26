@@ -11,9 +11,23 @@
 |
 */
 
+Route::get('/', 'HomeController@index')->name('home');
+
+Route::get('/privacy', function () {
+    return view('privacy');
+});
+
+Route::get('/terms', function () {
+    return view('terms');
+});
+
 Route::get('/assets', [
     'as' => 'assets.index',
     'uses' => 'AssetsController@index',
+]);
+
+Route::get('/test', [
+    'uses' => 'HomeController@test',
 ]);
 
 Route::get('/markets', [
@@ -36,6 +50,11 @@ Route::get('/orders', [
     'uses' => 'OrdersController@index',
 ]);
 
+Route::get('/addresses', [
+    'as' => 'addresses.index',
+    'uses' => 'AddressesController@index',
+]);
+
 Route::get('/address/{address}', [
     'as' => 'addresses.show',
     'uses' => 'AddressesController@show',
@@ -47,8 +66,6 @@ Route::get('/tx/{tx_hash}', [
 ]);
 
 Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('{asset}', [
     'as' => 'assets.show',

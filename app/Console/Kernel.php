@@ -13,12 +13,20 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
+        Commands\DownloadImages::class,
         Commands\BlockHeightCommand::class,
         Commands\FetchAssetsCommand::class,
         Commands\FetchMarketsCommand::class,
+        Commands\UpdateAgeOfChainsCommand::class,
+        Commands\UpdateAgeOfRustCommand::class,
         Commands\UpdateAssetsCommand::class,
         Commands\UpdateBlocksCommand::class,
+        Commands\UpdateHistoriesCommand::class,
         Commands\UpdateMarketsCommand::class,
+        Commands\UpdatePenisiumCommand::class,
+        Commands\UpdatePricesCommand::class,
+        Commands\UpdateRarePepeCommand::class,
+        Commands\UpdateSpellsOfGenesisCommand::class,
     ];
 
     /**
@@ -29,8 +37,12 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
+        $schedule->command('block:height')
+                 ->everyMinute();
+        $schedule->command('update:histories')
+                 ->hourly();
+        $schedule->command('update:blocks')
+                 ->daily();
     }
 
     /**

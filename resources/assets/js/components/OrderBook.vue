@@ -1,4 +1,5 @@
 <template>
+<div>
 <div class="table-responsive order-book">
   <table class="table table-striped table-sm">
     <thead class="text-left">
@@ -12,17 +13,26 @@
     </thead>
     <tbody>
       <tr v-for="(order, index) in orders">
-        <td class="text-right" :class="order.type == 'buy' ? 'text-success' : 'text-danger'">{{ order.exchange_rate }}</td>
+        <td class="text-right" :class="order.type == 'buy' ? 'text-success' : 'text-danger'" :title="order.exchange_rate_usd + ' USD'">{{ order.exchange_rate }}</td>
         <td class="text-right">{{ order.base_remaining_normalized }}</td>
         <td class="text-right">{{ order.quote_remaining_normalized }}</td>
         <td class="text-right" :title="baseSubtotal(index) + ' ' + baseAsset">{{ quoteSubtotal(index) }}</td>
-        <td><a :href="'http://xcpdex.com/address/' + order.source">{{ order.source }}</a></td>
+        <td><a :href="'https://xcpdex.com/address/' + order.source">{{ order.source }}</a></td>
       </tr>
       <tr v-if="orders.length == 0">
         <td class="text-center" colspan="5">No {{ side }} orders found.</td>
       </tr>
     </tbody>
   </table>
+</div>
+<div class="row mt-1 text-muted">
+  <div class="col">
+    {{ baseSubtotal(orders.length) }} {{ baseAsset }}
+  </div>
+  <div class="col text-right">
+    {{ quoteSubtotal(orders.length) }} {{ quoteAsset }}
+  </div>
+</div>
 </div>
 </template>
 

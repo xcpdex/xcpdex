@@ -2,7 +2,7 @@
 
 @section('content')
 <h1>{{ $slug }}</h1>
-<div class="table-responsive">
+<div class="table-responsive order-matches">
   <table class="table table-striped table-sm">
     <thead class="text-left">
       <tr>

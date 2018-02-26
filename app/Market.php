@@ -26,6 +26,36 @@ class Market extends Model
     }
 
     /**
+     * Last Open Buy Order
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function highestOpenBuyOrder()
+    {
+        return $this->hasOne(Order::class)->buys()->open()->orderBy('exchange_rate', 'desc');
+    }
+
+    /**
+     * Last Open Sell Order
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function lowestOpenSellOrder()
+    {
+        return $this->hasOne(Order::class)->sells()->open()->orderBy('exchange_rate', 'asc');
+    }
+
+    /**
+     * Open Orders
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function openOrders()
+    {
+        return $this->hasMany(Order::class)->open();
+    }
+
+    /**
      * Order Matches
      * 
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -33,6 +63,16 @@ class Market extends Model
     public function orderMatches()
     {
         return $this->hasMany(OrderMatch::class);
+    }
+
+    /**
+     * Last Order Match
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function lastMatch()
+    {
+        return $this->hasOne(OrderMatch::class)->orderBy('tx_index', 'desc');
     }
 
     /**

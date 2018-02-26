@@ -42,7 +42,10 @@ class BlockHeightCommand extends Command
      */
     public function handle()
     {
-        $this->isNewBlockHeight();
+        if($this->isNewBlockHeight())
+        {
+            \App\Jobs\UpdateBlock::dispatch(\Cache::get('block_height'));
+        }
     }
 
     private function isNewBlockHeight()

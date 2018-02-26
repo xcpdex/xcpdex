@@ -18,7 +18,7 @@
     <tbody>
       @foreach($assets as $asset)
       <tr>
-        <th>{{ $loop->index }}</th>
+        <th><img src="{{ isset($asset->meta['icon_url']) ? $asset->meta['icon_url'] : asset('/img/token.png')}}" width="24" /></th>
         <td><a href="{{ url(route('assets.show', ['asset' => $asset->name])) }}">{{ $asset->long_name ? $asset->long_name : $asset->name }}</a></td>
         <td><a href="{{ url(route('assets.show', ['asset' => $asset->name])) }}">{{ $asset->orders_count }}</a></td>
         <td><a href="{{ url(route('assets.show', ['asset' => $asset->name])) }}">{{ $asset->base_markets_count }}</a></td>
@@ -28,4 +28,5 @@
     </tbody>
   </table>
 </div>
+{!! $assets->links() !!}
 @endsection

@@ -37,71 +37,85 @@ class UpdateMarket implements ShouldQueue
     {
         $base_asset = $this->market->baseAsset()->first();
         $quote_asset = $this->market->quoteAsset()->first();
-        $offset = 0;
 
-        while($offset <= 1200000)
+        $buy_offset = $this->market->orders()
+            ->where('type', '=', 'buy')
+            ->count();
+
+        if($buy_offset) $buy_offset = $buy_offset - 10000 > 0 ? $buy_offset - 10000 : 0;
+
+        $sell_offset = $this->market->orders()
+            ->where('type', '=', 'sell')
+            ->count();
+
+        if($sell_offset) $sell_offset = $sell_offset - 10000 > 0 ? $sell_offset - 10000 : 0;
+
+        while($buy_offset <= 1200000)
         {
-        $buys = $this->counterparty->execute('get_orders', [
-            'filters' => [
-                [
-                    'field' => 'give_asset',
-                    'op'    => '==',
-                    'value' => $quote_asset->name,
-                ],[
-                    'field' => 'get_asset',
-                    'op'    => '==',
-                    'value' => $base_asset->name,
+            $buys = $this->counterparty->execute('get_orders', [
+                'filters' => [
+                    [
+                        'field' => 'give_asset',
+                        'op'    => '==',
+                        'value' => $quote_asset->name,
+                    ],[
+                        'field' => 'get_asset',
+                        'op'    => '==',
+                        'value' => $base_asset->name,
+                    ],
                 ],
-            ],
-            'offset' => $offset,
-        ]);
+                'offset' => $buy_offset,
+            ]);
 
-        $sells = $this->counterparty->execute('get_orders', [
-            'filters' => [
-                [
-                    'field' => 'give_asset',
-                    'op'    => '==',
-                    'value' => $base_asset->name,
-                ],[
-                    'field' => 'get_asset',
-                    'op'    => '==',
-                    'value' => $quote_asset->name,
+            $sells = $this->counterparty->execute('get_orders', [
+                'filters' => [
+                    [
+                        'field' => 'give_asset',
+                        'op'    => '==',
+                        'value' => $base_asset->name,
+                    ],[
+                        'field' => 'get_asset',
+                        'op'    => '==',
+                        'value' => $quote_asset->name,
+                    ],
                 ],
-            ],
-            'offset' => $offset,
-        ]);
+                'offset' => $sell_offset,
+            ]);
 
-        if(0 == count($buys) + count($sells)) break;
+            if(0 == count($buys) + count($sells)) break;
 
-        foreach([$buys, $sells] as $orders)
-        {
-            foreach($orders as $order)
+            foreach([$buys, $sells] as $orders)
             {
-                $type = $order['get_asset'] == $base_asset->name ? 'buy' : 'sell';
-                $base = 'buy' == $type ? 'get' : 'give';
-                $quote = 'sell' == $type ? 'get' : 'give';
+                foreach($orders as $order)
+                {
+                    $type = $order['get_asset'] == $base_asset->name ? 'buy' : 'sell';
+                    $base = 'buy' == $type ? 'get' : 'give';
+                    $quote = 'sell' == $type ? 'get' : 'give';
 
-                \App\Order::updateOrCreate([
-                    'type' => $type,
-                    'source' => $order['source'],
-                    'market_id' => $this->market->id,
-                    'block_index' => $order['block_index'],
-                    'expire_index' => $order['expire_index'],
-                    'tx_index' => $order['tx_index'],
-                    'tx_hash' => $order['tx_hash'],
-                    'fee_paid' => $order['fee_provided'],
-                    'duration' => $order['expiration'],
-                ],[
-                    'status' => $order['status'],
-                    'base_quantity' => $order[$base.'_quantity'],
-                    'base_remaining' => $order[$base.'_remaining'],
-                    'quote_quantity' => $order[$quote.'_quantity'],
-                    'quote_remaining' => $order[$quote.'_remaining'],
-                    'exchange_rate' => $this->getExchangeRate($type, $base_asset, $order[$base.'_quantity'], $order[$quote.'_quantity']),
-                ]);
+                    \App\Order::updateOrCreate([
+                        'type' => $type,
+                        'source' => $order['source'],
+                        'market_id' => $this->market->id,
+                        'block_index' => $order['block_index'],
+                        'expire_index' => $order['expire_index'],
+                        'tx_index' => $order['tx_index'],
+                        'tx_hash' => $order['tx_hash'],
+                        'fee_paid' => $order['fee_provided'],
+                        'duration' => $order['expiration'],
+                    ],[
+                        'status' => $order['status'],
+                        'base_quantity' => $order[$base.'_quantity'],
+                        'base_remaining' => $order[$base.'_remaining'],
+                        'quote_quantity' => $order[$quote.'_quantity'],
+                        'quote_remaining' => $order[$quote.'_remaining'],
+                        'exchange_rate' => $this->getExchangeRate($type, $base_asset, $order[$base.'_quantity'], $order[$quote.'_quantity']),
+                    ]);
+
+                    \App\Jobs\UpdateBlock::dispatch($order['block_index']);
+                }
             }
-        }
-        $offset = $offset + 1000;
+            $buy_offset = $buy_offset + 1000;
+            $sell_offset = $sell_offset + 1000;
         }
 
         \App\Jobs\UpdateOrderMatches::dispatch($this->market);

@@ -23,6 +23,7 @@ class OrderResource extends Resource
             'status' => $this->status,
             'type' => $this->type,
             'exchange_rate' => $this->exchange_rate,
+            'exchange_rate_usd' => $this->exchange_rate_usd,
             'base_quantity' => $this->base_quantity,
             'base_remaining' => $this->base_remaining,
             'base_remaining_normalized' => $this->base_remaining_normalized,

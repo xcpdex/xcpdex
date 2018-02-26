@@ -32,7 +32,7 @@ class FetchMarkets implements ShouldQueue
      */
     public function handle()
     {
-        $offset = 0;
+        $offset = \App\Order::count();
 
         while($offset <= 1200000)
         {
@@ -84,6 +84,6 @@ class FetchMarkets implements ShouldQueue
 
     private function quote_assets()
     {
-        return ['BTC', 'XCP', 'XBTC', 'SJCX', 'PEPECASH', 'BITCRYSTALS', 'WILLCOIN', 'FLDC', 'LTBCOIN', 'RUSTBITS', 'DATABITS'];
+        return ['BTC', 'XCP', 'XBTC', 'SJCX', 'PEPECASH', 'BITCRYSTALS', 'WILLCOIN', 'FLDC', 'LTBCOIN', 'RUSTBITS', 'DATABITS', 'PENISIUM', 'XFCCOIN'];
     }
 }
