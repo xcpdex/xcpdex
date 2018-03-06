@@ -14,13 +14,16 @@
     </thead>
     <tbody>
       <tr v-for="match in matches">
-        <td><a :href="'https://xcpdex.com/tx/' + match.order_match.tx_hash">{{ match.order_match.block.block_time }}</a></td>
+        <td><a :href="'https://xcpdex.com/tx/' + match.order_match.tx_hash">{{ match.order_match.block.mined_at }}</a></td>
         <td :class="match.order_match.type == 'buy' ? 'text-success' : 'text-danger'">{{ match.order_match.type }}</td>
         <td class="text-right" :title="match.order.exchange_rate_usd + ' USD'">{{ match.order.exchange_rate }}</td>
         <td class="text-right">{{ match.base_quantity_normalized }}</td>
-        <td class="text-right">{{ match.quote_quantity_normalized }}</td>
+        <td class="text-right" :title="match.quote_quantity_usd + ' USD'">{{ match.quote_quantity_normalized }}</td>
         <td><a :href="'https://xcpdex.com/address/' + match.order_match.source">{{ match.order_match.source }}</a></td>
         <td><a :href="'https://xcpdex.com/address/' + match.order.source">{{ match.order.source }}</a></td>
+      </tr>
+      <tr v-if="matches.length == 0">
+        <td class="text-center" colspan="7">No order matches found.</td>
       </tr>
       <infinite-loading @infinite="infiniteHandler">
         <span slot="no-more"></span>

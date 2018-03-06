@@ -47,7 +47,7 @@ class OrdersController extends Controller
      */
     public function show($slug)
     {
-        $order = \App\Order::whereTxHash($slug)->with('market', 'orderMatches')->first();
+        $order = \App\Order::whereTxHash($slug)->with('market', 'orderMatches', 'orderMatchesReverse')->first();
 
         return view('orders.show', compact('order'));
     }

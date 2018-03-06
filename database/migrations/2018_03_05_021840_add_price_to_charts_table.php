@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddExchangeRateUsdToOrders extends Migration
+class AddPriceToChartsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddExchangeRateUsdToOrders extends Migration
      */
     public function up()
     {
-        Schema::table('orders', function (Blueprint $table) {
-            $table->decimal('exchange_rate_usd', 20, 8)->unsigned()->default(0);
+        Schema::table('charts', function (Blueprint $table) {
+            $table->decimal('price_usd', 22, 8)->unsigned()->nullable();
         });
     }
 
@@ -25,8 +25,8 @@ class AddExchangeRateUsdToOrders extends Migration
      */
     public function down()
     {
-        Schema::table('orders', function (Blueprint $table) {
-            $table->dropColumn('exchange_rate_usd');
+        Schema::table('charts', function (Blueprint $table) {
+            $table->dropColumn('price_usd');
         });
     }
 }

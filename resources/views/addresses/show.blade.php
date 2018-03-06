@@ -1,7 +1,10 @@
 @extends('layouts.app')
 
+@section('title', $slug)
+
 @section('content')
-<h1>{{ $slug }}</h1>
+<h1>Address</h1>
+<p class="lead">{{ $slug }}</p>
 <div class="table-responsive order-matches">
   <table class="table table-striped table-sm">
     <thead class="text-left">

@@ -18,9 +18,12 @@ class CreateOrderMatchesTable extends Migration
             $table->integer('market_id')->unsigned()->index();
             $table->integer('order_id')->unsigned()->index();
             $table->integer('order_match_id')->unsigned()->index();
+            $table->integer('block_index')->unsigned()->index();
             $table->integer('tx_index')->unsigned()->index();
+            $table->string('status');
             $table->bigInteger('base_quantity')->unsigned();
             $table->bigInteger('quote_quantity')->unsigned();
+            $table->decimal('quote_quantity_usd', 22, 8)->unsigned()->nullable();
             $table->timestamps();
         });
     }

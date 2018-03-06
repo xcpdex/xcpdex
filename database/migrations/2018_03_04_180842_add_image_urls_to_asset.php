@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddMetaColumnToAssets extends Migration
+class AddImageUrlsToAsset extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,8 @@ class AddMetaColumnToAssets extends Migration
     public function up()
     {
         Schema::table('assets', function (Blueprint $table) {
-            $table->json('meta')->nullable();
+            $table->string('icon_url')->nullable();
+            $table->string('image_url')->nullable();
         });
     }
 
@@ -26,7 +27,8 @@ class AddMetaColumnToAssets extends Migration
     public function down()
     {
         Schema::table('assets', function (Blueprint $table) {
-            $table->dropColumn('meta');
+            $table->dropColumn('icon_url');
+            $table->dropColumn('image_url');
         });
     }
 }

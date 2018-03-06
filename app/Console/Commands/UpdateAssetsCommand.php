@@ -37,7 +37,7 @@ class UpdateAssetsCommand extends Command
      */
     public function handle()
     {
-        $assets = \App\Asset::where('locked', '=', 0)->orWhere('processed', '=', 0)->get();
+        $assets = \App\Asset::whereProcessed(0)->get();
 
         foreach($assets as $asset)
         {

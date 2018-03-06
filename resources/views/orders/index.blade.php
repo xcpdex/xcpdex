@@ -3,7 +3,7 @@
 @section('title', 'Orders')
 
 @section('content')
-<h1>Orders <small class="lead">{{ $orders->total() }} Found</small></h1>
+<h1 class="mb-3">Orders <small class="lead">{{ $orders->total() }} Found</small></h1>
 <div class="table-responsive order-matches">
   <table class="table table-striped table-sm">
     <thead class="text-left">
@@ -21,7 +21,7 @@
     <tbody>
       @foreach($orders as $order)
       <tr>
-        <td><a href="{{ url(route('orders.show', ['order' => $order->tx_hash])) }}">{{ $order->block->block_time }}</a></td>
+        <td><a href="{{ url(route('orders.show', ['order' => $order->tx_hash])) }}">{{ $order->block->mined_at }}</a></td>
         <td><a href="{{ url(route('markets.show', ['market' => $order->market->slug])) }}">{{ $order->market->name }}</a></td>
         <td class="{{ $order->type == 'buy' ? 'text-success' : 'text-danger' }}">{{ $order->type }}</td>
         <td>{{ $order->status }}</td>

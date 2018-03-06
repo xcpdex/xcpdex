@@ -13,16 +13,18 @@ class FetchAssets implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $counterparty;
+    protected $method;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($method=null)
     {
         $this->counterparty = new \JsonRPC\Client(env('CP_API'));
         $this->counterparty->authentication(env('CP_USER'), env('CP_PASS'));
+        $this->method = $method;
     }
 
     /**
@@ -32,23 +34,100 @@ class FetchAssets implements ShouldQueue
      */
     public function handle()
     {
-        $asset_names = $this->counterparty->execute('get_asset_names');
+        $names = $this->counterparty->execute('get_asset_names');
 
-        foreach($asset_names as $asset_name)
-        {
-            $asset = \App\Asset::firstOrCreate(['name' => $asset_name]);
+        switch ($this->method) {
+            case 'create':
+                $this->createAssets($names);
+                break;
+            case 'update':
+                $this->createAssets($names, true);
+                break;
+            case 'insert':
+                $this->insertAssets($names);
+                break;
+            case 'import':
+                $this->importAssets();
+                break;
+            default:
+                $this->createAssets($names);
+                break;
         }
+    }
 
-        \App\Asset::firstOrCreate([
-            'name' => 'XCP',
-            'divisible' => 1,
-            'processed' => 1,
-        ]);
+    /**
+     * Create / Update Assets
+     *
+     * @return void
+     */
+    private function createAssets($names, $update=false)
+    {
+        foreach($names as $name)
+        {
+            $asset = \App\Asset::firstOrCreate(['name' => $name]);
 
-        \App\Asset::firstOrCreate([
-            'name' => 'BTC',
-            'divisible' => 1,
-            'processed' => 1,
-        ]);
+            if($asset->wasRecentlyCreated && $update)
+            {
+                \App\Jobs\UpdateAsset::dispatch($asset);
+            }
+        }
+    }
+
+    /**
+     * Bulk Insert Asset Names
+     *
+     * @return void
+     */
+    private function insertAssets($names)
+    {
+        $chunks = array_chunk($names, 1000, true);
+
+        foreach($chunks as $chunk)
+        {
+            foreach($chunk as $name)
+            {
+                $assets[] = ['name' => $name];
+            }
+
+            \App\Asset::insert($assets);
+
+            $assets = [];
+        }
+    }
+
+    /**
+     * Import Assets
+     *
+     * @return void
+     */
+    private function importAssets()
+    {
+        foreach(range('A', 'Z') as $abc)
+        {
+            $file = fopen(storage_path("app/assets/{$abc}.csv"), 'r');
+
+            while(($line = fgetcsv($file)) !== false)
+            {
+                $assets[] = [
+                    'name' => $line[0],
+                    'issuance' => $line[1],
+                    'divisible' => $line[2],
+                    'locked' => $line[3],
+                ];
+
+                if(count($assets) === 100)
+                {
+                    \App\Asset::insert($assets);
+
+                    $assets = [];
+                }
+            }
+
+            \App\Asset::insert($assets);
+
+            $assets = [];
+
+            fclose($file);
+        }
     }
 }

@@ -13,7 +13,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        Commands\DownloadImages::class,
+        Commands\DeployCommand::class,
+        Commands\BackupAssetsCommand::class,
         Commands\BlockHeightCommand::class,
         Commands\FetchAssetsCommand::class,
         Commands\FetchMarketsCommand::class,
@@ -21,12 +22,17 @@ class Kernel extends ConsoleKernel
         Commands\UpdateAgeOfRustCommand::class,
         Commands\UpdateAssetsCommand::class,
         Commands\UpdateBlocksCommand::class,
+        Commands\UpdateChartsCommand::class,
+        Commands\UpdateEnhancedAssetsCommand::class,
         Commands\UpdateHistoriesCommand::class,
         Commands\UpdateMarketsCommand::class,
+        Commands\UpdateMarketSummariesCommand::class,
+        Commands\UpdatePepeCashHistoryCommand::class,
         Commands\UpdatePenisiumCommand::class,
         Commands\UpdatePricesCommand::class,
         Commands\UpdateRarePepeCommand::class,
         Commands\UpdateSpellsOfGenesisCommand::class,
+        Commands\UpdateUsdPricesCommand::class,
     ];
 
     /**
@@ -37,12 +43,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('block:height')
-                 ->everyMinute();
-        $schedule->command('update:histories')
-                 ->hourly();
-        $schedule->command('update:blocks')
-                 ->daily();
+        // $schedule->command('block:height')->everyMinute();
+        // $schedule->command('update:rares')->daily();
+        // $schedule->command('update:spells')->daily();
     }
 
     /**

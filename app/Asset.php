@@ -12,7 +12,7 @@ class Asset extends Model
      * @var array
      */
     protected $fillable = [
-         'name', 'long_name', 'description', 'issuance', 'divisible', 'locked', 'processed', 'meta->template', 'meta->asset_url', 'meta->image_url', 'meta->icon_url', 'meta->series', 'meta->number', 'meta->burned',
+         'name', 'long_name', 'description', 'icon_url', 'image_url', 'issuance', 'divisible', 'locked', 'enhanced', 'processed', 'meta->description', 'meta->template', 'meta->asset_url', 'meta->image_url', 'meta->icon_url', 'meta->series', 'meta->number', 'meta->burned',
     ];
 
     /**
@@ -21,7 +21,7 @@ class Asset extends Model
      * @var array
      */
     protected $appends = [
-        'issuance_normalized',
+        'display_description', 'display_icon_url', 'issuance_normalized',
     ];
 
     /**
@@ -32,6 +32,26 @@ class Asset extends Model
     protected $casts = [
         'meta' => 'array',
     ];
+
+    /**
+     * Display Description
+     *
+     * @return string
+     */
+    public function getDisplayDescriptionAttribute()
+    {
+        return isset($this->meta['description']) ? $this->meta['description'] : $this->description;
+    }
+
+    /**
+     * Display Icon URL
+     *
+     * @return string
+     */
+    public function getDisplayIconUrlAttribute()
+    {
+        return isset($this->icon_url) ? $this->icon_url : asset('/img/token.png');
+    }
 
     /**
      * Issuance Normalized
@@ -51,6 +71,16 @@ class Asset extends Model
     public function histories()
     {
         return $this->hasMany(History::class);
+    }
+
+    /**
+     * Projects
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function projects()
+    {
+        return $this->belongsToMany(Project::class);
     }
 
     /**
@@ -130,7 +160,7 @@ class Asset extends Model
      */
     public function baseMarketsOrderMatches()
     {
-        return $this->hasManyThrough(OrderMatch::class, Market::class, 'base_asset_id', 'market_id');
+        return $this->hasManyThrough(OrderMatch::class, Market::class, 'base_asset_id', 'market_id')->whereStatus('completed');
     }
 
     /**
@@ -140,7 +170,7 @@ class Asset extends Model
      */
     public function quoteMarketsOrderMatches()
     {
-        return $this->hasManyThrough(OrderMatch::class, Market::class, 'quote_asset_id', 'market_id');
+        return $this->hasManyThrough(OrderMatch::class, Market::class, 'quote_asset_id', 'market_id')->whereStatus('completed');
     }
 
     /**

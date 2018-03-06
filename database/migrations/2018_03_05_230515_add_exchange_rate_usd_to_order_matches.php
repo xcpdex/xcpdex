@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddBlockIndexColumnToOrderMatches extends Migration
+class AddExchangeRateUsdToOrderMatches extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,9 @@ class AddBlockIndexColumnToOrderMatches extends Migration
      */
     public function up()
     {
-        //
+        Schema::table('order_matches', function (Blueprint $table) {
+            $table->decimal('exchange_rate_usd', 22, 8)->unsigned()->nullable();
+        });
     }
 
     /**
@@ -23,6 +25,8 @@ class AddBlockIndexColumnToOrderMatches extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('order_matches', function (Blueprint $table) {
+            $table->dropColumn('exchange_rate_usd');
+        });
     }
 }

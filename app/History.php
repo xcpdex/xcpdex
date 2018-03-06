@@ -12,7 +12,7 @@ class History extends Model
      * @var array
      */
     protected $fillable = [
-        'asset_id', 'type', 'value', 'timestamp',
+        'asset_id', 'type', 'value', 'timestamp', 'reported_at',
     ];
 
     /**
@@ -21,6 +21,6 @@ class History extends Model
      * @var array
      */
     protected $dates = [
-        'timestamp',
+        'reported_at',
     ];
 }

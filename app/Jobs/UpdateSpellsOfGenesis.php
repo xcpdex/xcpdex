@@ -19,6 +19,11 @@ class UpdateSpellsOfGenesis implements ShouldQueue
      */
     public function handle()
     {
+        $project = \App\Project::firstOrCreate([
+            'name' => 'Spells of Genesis',
+            'slug' => 'spells-of-genesis',
+        ]);
+
         $context = [
             'ssl' => [
                 'verify_peer' => false,
@@ -34,13 +39,33 @@ class UpdateSpellsOfGenesis implements ShouldQueue
             $asset = \App\Asset::whereName($card)->first();
             if($asset)
             {
+                $project->assets()->save($asset);
+
+                $image_url = 'https://xcp.cards/images/sogcards/' . $asset->name . '.jpg';
+
                 $asset->update([
                     'meta->template' => 'spells-of-genesis',
-                    'meta->asset_url' => 'https://xcp.cards/sog/cards/' . $asset->name,
-                    'meta->image_url' => 'https://xcp.cards/images/sogcards/' . $asset->name . '.jpg',
+                    'meta->image_url' => $image_url,
                     'meta->series' => $data->element,
                     'meta->number' => $data->rarity,
                 ]);
+
+                if(isset($image_url))
+                {
+                    try
+                    {
+                        $contents = file_get_contents($image_url, false, stream_context_create($context));
+                        $file_name = substr($image_url, strrpos($image_url, '/') + 1);
+                        $file_name = str_replace(explode('.', $file_name)[0], $asset->name, $file_name);
+                        \Storage::put('/public/a/images/' . $file_name, $contents);
+                        $asset->update([
+                            'image_url' => url('/storage/a/images/' . $file_name)
+                        ]);
+                    }
+                    catch (\Exception $e)
+                    {
+                    }
+                }
             }
         }
     }

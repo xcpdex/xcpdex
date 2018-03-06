@@ -21,7 +21,9 @@ class CreateAssetsTable extends Migration
             $table->bigInteger('issuance')->unsigned()->default(0);
             $table->boolean('divisible')->default(0);
             $table->boolean('locked')->default(0);
+            $table->boolean('enhanced')->default(0);
             $table->boolean('processed')->default(0);
+            $table->json('meta')->nullable();
             $table->timestamps();
         });
     }

@@ -13,6 +13,16 @@ use Illuminate\Http\Request;
 |
 */
 
+Route::get('/search', [
+    'as' => 'api.search.show',
+    'uses' => 'Api\SearchController@show',
+]);
+
+Route::get('/markets/{asset}', [
+    'as' => 'api.markets.show',
+    'uses' => 'Api\MarketsController@show',
+]);
+
 Route::get('/orders/{market}', [
     'as' => 'api.orders.show',
     'uses' => 'Api\OrdersController@show',
@@ -26,4 +36,9 @@ Route::get('/matches/{market}', [
 Route::get('/charts/{market}', [
     'as' => 'api.highCharts.show',
     'uses' => 'Api\HighChartsController@show',
+]);
+
+Route::get('/ohlc/{market}', [
+    'as' => 'api.ohlc.show',
+    'uses' => 'Api\OhlcController@show',
 ]);

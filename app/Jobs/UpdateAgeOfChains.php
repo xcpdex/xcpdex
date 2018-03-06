@@ -19,6 +19,11 @@ class UpdateAgeOfChains implements ShouldQueue
      */
     public function handle()
     {
+        $project = \App\Project::firstOrCreate([
+            'name' => 'Age of Chains',
+            'slug' => 'age-of-chains',
+        ]);
+
         $cards = [
             'TRUTHFINDER' => [
                 '013',
@@ -115,9 +120,11 @@ class UpdateAgeOfChains implements ShouldQueue
 
         foreach($cards as $card => $data)
         {
-            $asset = \App\Asset::whereName($card)->first();
+            $asset = \App\Asset::whereNull('image_url')->whereName($card)->first();
             if($asset)
             {
+                $project->assets()->syncWithoutDetaching([$asset->id]);
+
                 $asset->update([
                     'meta->template' => 'age-of-chains',
                     'meta->number' => $data[0],
@@ -126,6 +133,23 @@ class UpdateAgeOfChains implements ShouldQueue
                     'meta->asset_url' => $data[3],
                     'meta->image_url' => $data[4],
                 ]);
+
+                if(isset($data[4]))
+                {
+                    try
+                    {
+                        $contents = file_get_contents($data[4]);
+                        $file_name = substr($data[4], strrpos($data[4], '/') + 1);
+                        $file_name = str_replace(explode('.', $file_name)[0], $asset->name, $file_name);
+                        \Storage::put('/public/a/images/' . $file_name, $contents);
+                        $asset->update([
+                            'image_url' => url('/storage/a/images/' . $file_name)
+                        ]);
+                    }
+                    catch (\Exception $e)
+                    {
+                    }
+                }
             }
         }
     }

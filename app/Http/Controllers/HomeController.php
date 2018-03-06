@@ -32,7 +32,29 @@ class HomeController extends Controller
     public function test()
     {
         return $this->counterparty->execute('get_blocks', [
-            'block_indexes' => [280312, 510294],
+            'block_indexes' => [283873],
         ]);
+
+        return $this->counterparty->execute('get_btcpays', [
+            'filters' => [
+                [
+                    'field' => 'order_match_id',
+                    'op'    => 'LIKE',
+                    'value' => 'dd122ee022bdda56b5338c1602effc04d0f96ef4c7850929b8889d55c74fe09c%',
+                ],
+            ],
+        ]);
+    }
+
+    private function find_key_value($array, $key, $val)
+    {
+        foreach ($array as $item)
+        {
+            if (is_array($item) && $this->find_key_value($item, $key, $val)) return true;
+
+            if (isset($item[$key]) && $item[$key] == $val) return true;
+        }
+
+        return false;
     }
 }

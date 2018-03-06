@@ -13136,16 +13136,23 @@ body {
   max-height: 300px;
 }
 
-.order-matches {
+.order-matches,
+.asset-markets {
   max-height: 500px;
 }
 
 .order-book .table,
-.order-matches .table {
+.order-matches .table,
+.asset-markets .table {
   font-size: 13px;
   margin-bottom: 0;
   overflow-y: auto;
   white-space: nowrap;
   border: 1px solid #dfd7ca;
+}
+
+.asset-markets .table,
+.asset-markets .table th {
+  border-top: 0 !important;
 }
 

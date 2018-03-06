@@ -44,7 +44,11 @@ class BlockHeightCommand extends Command
     {
         if($this->isNewBlockHeight())
         {
-            \App\Jobs\UpdateBlock::dispatch(\Cache::get('block_height'));
+            $this->call('update:histories');
+            sleep(30);
+            $this->call('update:blocks');
+            sleep(30);
+            // $this->call('update:charts');
         }
     }
 

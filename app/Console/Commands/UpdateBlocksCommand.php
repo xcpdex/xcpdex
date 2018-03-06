@@ -6,8 +6,6 @@ use Illuminate\Console\Command;
 
 class UpdateBlocksCommand extends Command
 {
-    protected $counterparty;
-
     /**
      * The name and signature of the console command.
      *
@@ -20,7 +18,7 @@ class UpdateBlocksCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Establish Block Times';
+    protected $description = 'Update Blocks';
 
     /**
      * Create a new command instance.
@@ -29,9 +27,6 @@ class UpdateBlocksCommand extends Command
      */
     public function __construct()
     {
-        $this->counterparty = new \JsonRPC\Client(env('CP_API'));
-        $this->counterparty->authentication(env('CP_USER'), env('CP_PASS'));
-
         parent::__construct();
     }
 
@@ -42,18 +37,26 @@ class UpdateBlocksCommand extends Command
      */
     public function handle()
     {
-        $last_block = \App\Block::orderBy('block_index', 'desc')->first();
+        $block = \App\Block::orderBy('block_index', 'desc')->first();
 
-        $block_index = $last_block ? $last_block->block_index - 144 : 0;
+        $first_block = $block ? $block->block_index : 278319;
 
-        $orders = \App\Order::where('block_index', '>', $block_index)
-            ->select('block_index')
-            ->groupBy('block_index')
-            ->get();
-
-        foreach($orders as $order)
+        if(\Cache::get('block_height') - $first_block < 100)
         {
-            \App\Jobs\UpdateBlock::dispatch($order->block_index);
+            \App\Jobs\UpdateBlocks::dispatch($first_block, \Cache::get('block_height'));
+        }
+        else
+        {
+            $next_block = $first_block + 100;
+
+            while($next_block < \Cache::get('block_height'))
+            {
+                $chain[] = new \App\Jobs\UpdateBlocks($next_block, $next_block + 100);
+
+                $next_block = $next_block + 100;
+            }
+
+            \App\Jobs\UpdateBlocks::dispatch($first_block, $first_block + 100)->chain($chain);
         }
     }
 }

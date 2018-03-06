@@ -37,31 +37,45 @@ class UpdateHistory implements ShouldQueue
 
         $data = json_decode(file_get_contents('http://coincap.io/history/' . $this->ticker, true));
 
+        $last = $asset->histories()->orderBy('timestamp', 'desc')->first();
+
         foreach($data->market_cap as $result)
         {
+            if($last && $last->timestamp > ($result[0] / 1000)) continue;
+
             \App\History::firstOrCreate([
                 'asset_id' => $asset->id,
                 'type' => 'market_cap',
                 'value' => $result[1],
-                'timestamp' => \Carbon\Carbon::createFromTimestamp($result[0] / 1000, 'America/New_York'),
+                'timestamp' => $result[0] / 1000,
+            ],[
+                'reported_at' => \Carbon\Carbon::createFromTimestamp($result[0] / 1000, 'America/New_York'),
             ]);
         }
         foreach($data->price as $result)
         {
+            if($last && $last->timestamp > ($result[0] / 1000)) continue;
+
             \App\History::firstOrCreate([
                 'asset_id' => $asset->id,
                 'type' => 'price',
                 'value' => $result[1] * 100,
-                'timestamp' => \Carbon\Carbon::createFromTimestamp($result[0] / 1000, 'America/New_York'),
+                'timestamp' => $result[0] / 1000,
+            ],[
+                'reported_at' => \Carbon\Carbon::createFromTimestamp($result[0] / 1000, 'America/New_York'),
             ]);
         }
         foreach($data->volume as $result)
         {
+            if($last && $last->timestamp > ($result[0] / 1000)) continue;
+
             \App\History::firstOrCreate([
                 'asset_id' => $asset->id,
                 'type' => 'volume',
                 'value' => $result[1],
-                'timestamp' => \Carbon\Carbon::createFromTimestamp($result[0] / 1000, 'America/New_York'),
+                'timestamp' => $result[0] / 1000,
+            ],[
+                'reported_at' => \Carbon\Carbon::createFromTimestamp($result[0] / 1000, 'America/New_York'),
             ]);
         }
     }

@@ -12,7 +12,7 @@ class Block extends Model
      * @var array
      */
     protected $fillable = [
-         'block_index', 'block_hash', 'block_time',
+         'block_index', 'block_hash', 'previous_block_hash', 'difficulty', 'block_time', 'mined_at',
     ];
 
     /**
@@ -21,7 +21,7 @@ class Block extends Model
      * @var array
      */
     protected $dates = [
-         'block_time',
+         'mined_at',
     ];
 
     /**
@@ -32,6 +32,17 @@ class Block extends Model
     public function orders()
     {
         return $this->hasMany(Order::class, 'block_index', 'block_index');
+    }
+
+
+    /**
+     * Order Matches
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function orderMatches()
+    {
+        return $this->hasMany(OrderMatch::class, 'block_index', 'block_index');
     }
 
     /**

@@ -13,7 +13,16 @@ class MarketsController extends Controller
      */
     public function index()
     {
-        $markets = \App\Market::withCount('orders')->orderBy('orders_count', 'desc')->paginate(100);
+        $markets = \Cache::remember('markets.index', 10, function() {
+            $block_index = \Cache::get('block_height') - 13140;
+            return \App\Market::has('orderMatches', '>', 50)
+                ->whereHas('orderMatches', function ($query) use ($block_index) {
+                    $query->where('block_index', '>', $block_index);
+                })
+                ->withCount('openOrders', 'orders', 'orderMatches')
+                ->orderBy('quote_market_cap_usd', 'desc')
+                ->paginate(100);
+        });
 
         return view('markets.index', compact('markets'));
     }
@@ -53,6 +62,7 @@ class MarketsController extends Controller
             ->firstOrFail();
 
         $last_match = $market->orderMatches()
+            ->whereStatus('completed')
             ->has('order.block')
             ->orderBy('tx_index', 'desc')
             ->first();

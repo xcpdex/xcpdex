@@ -12,7 +12,7 @@ class OrderMatch extends Model
      * @var array
      */
     protected $fillable = [
-         'market_id', 'order_id', 'order_match_id', 'tx_index', 'base_quantity', 'quote_quantity',
+         'market_id', 'order_id', 'order_match_id', 'block_index', 'tx_index', 'status', 'base_quantity', 'quote_quantity', 'quote_quantity_usd', 'exchange_rate_usd',
     ];
 
     /**
@@ -42,6 +42,26 @@ class OrderMatch extends Model
     public function getQuoteQuantityNormalizedAttribute()
     {
         return $this->order->market->quoteAsset->divisible ? fromSatoshi($this->quote_quantity) : sprintf("%.8f", (float)$this->quote_quantity);
+    }
+
+    /**
+     * Block
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function block()
+    {
+        return $this->belongsTo(Block::class, 'block_index', 'block_index');
+    }
+
+    /**
+     * Market
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function market()
+    {
+        return $this->belongsTo(Market::class);
     }
 
     /**

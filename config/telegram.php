@@ -42,7 +42,9 @@ return [
             'username'  => 'XCPDEXBOT',
             'token' => env('TELEGRAM_BOT_TOKEN', 'YOUR-BOT-TOKEN'),
             'commands' => [
-                App\Commands\StartCommand::class
+                App\Commands\TelegramAssetCommand::class,
+                App\Commands\TelegramMarketCommand::class,
+                App\Commands\TelegramStartCommand::class,
             ],
         ],
     ],

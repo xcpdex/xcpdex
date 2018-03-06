@@ -19,6 +19,12 @@ class CreateMarketsTable extends Migration
             $table->integer('quote_asset_id')->unsigned()->index();
             $table->string('name')->unique();
             $table->string('slug')->unique();
+            $table->bigInteger('base_volume')->default(0);
+            $table->decimal('last_price_usd', 22, 8)->unsigned()->default(0);
+            $table->bigInteger('quote_volume')->default(0);
+            $table->decimal('quote_volume_usd', 22, 8)->unsigned()->default(0);
+            $table->bigInteger('quote_market_cap')->default(0);
+            $table->decimal('quote_market_cap_usd', 22, 8)->unsigned()->default(0);
             $table->timestamps();
         });
     }

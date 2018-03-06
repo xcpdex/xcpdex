@@ -3,7 +3,7 @@
 @section('title', 'Assets')
 
 @section('content')
-<h1>Assets <small class="lead">{{ $assets->total() }} Found</small></h1>
+<h1 class="mb-3">Assets <small class="lead">{{ $assets->total() }} Found</small></h1>
 <div class="table-responsive">
   <table class="table table-striped table-sm">
     <thead class="text-left">

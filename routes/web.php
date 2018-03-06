@@ -21,9 +21,23 @@ Route::get('/terms', function () {
     return view('terms');
 });
 
+Route::get('/testing', function () {
+    return view('test');
+});
+
 Route::get('/assets', [
     'as' => 'assets.index',
     'uses' => 'AssetsController@index',
+]);
+
+Route::get('/asset/{asset}', [
+    'as' => 'assets.show',
+    'uses' => 'AssetsController@show',
+]);
+
+Route::get('/project/{project}', [
+    'as' => 'projects.show',
+    'uses' => 'ProjectsController@show',
 ]);
 
 Route::get('/test', [
@@ -50,6 +64,16 @@ Route::get('/orders', [
     'uses' => 'OrdersController@index',
 ]);
 
+Route::get('/blocks', [
+    'as' => 'blocks.index',
+    'uses' => 'BlocksController@index',
+]);
+
+Route::get('/block/{block_index}', [
+    'as' => 'blocks.show',
+    'uses' => 'BlocksController@show',
+]);
+
 Route::get('/addresses', [
     'as' => 'addresses.index',
     'uses' => 'AddressesController@index',
@@ -67,7 +91,6 @@ Route::get('/tx/{tx_hash}', [
 
 Auth::routes();
 
-Route::get('{asset}', [
-    'as' => 'assets.show',
-    'uses' => 'AssetsController@show',
-]);
+Route::get('/{asset}', function ($asset) {
+    return redirect(route('assets.show', ['asset' => $asset]));
+});

@@ -35,55 +35,54 @@ class UpdateAsset implements ShouldQueue
     public function handle()
     {
         try {
-            $issuances = $this->counterparty->execute('get_issuances', [
-                'filters' => [
-                    [
-                        'field' => 'asset',
-                        'op'    => '==',
-                        'value' => $this->asset->name,
-                    ],
-                    [
-                        'field' => 'status',
-                        'op'    => '==',
-                        'value' => 'valid',
-                    ],
-                ],
-            ]);
-        }
-        catch(\Exception $e)
-        {
-            \Storage::append('error.log', $this->asset->name);
+            $issuances = $this->getIssuances($this->asset->name);
 
-            return true;
-        }
+            $issuance = end($issuances);
+            $total_issuance = array_sum(array_column($issuances,'quantity'));
+            $is_divisible = $this->find_key_value($issuances, 'divisible', 1);
+            $is_locked = $this->find_key_value($issuances, 'locked', 1);
 
-        $issuance = end($issuances);
-        $total_issuance = array_sum(array_column($issuances,'quantity'));
-
-        if($this->asset->processed && $this->asset->locked)
-        {
-            $this->asset->update([
-                'description' => str_limit($issuance['description'], 252),
-            ]);
-        }
-        elseif($this->asset->processed && isset($issuance['locked']))
-        {
-            $this->asset->update([
-                'description' => str_limit($issuance['description'], 252),
-                'issuance' => $total_issuance,
-                'locked' => $issuance['locked'],
-            ]);
-        }
-        elseif(isset($issuance['locked']))
-        {
             $this->asset->update([
                 'long_name' => $issuance['asset_longname'],
                 'description' => str_limit($issuance['description'], 252),
                 'issuance' => $total_issuance,
-                'divisible' => $issuance['divisible'],
-                'locked' => $issuance['locked'],
+                'divisible' => $is_divisible,
+                'locked' => $is_locked,
                 'processed' => 1,
             ]);
+
+        } catch(\Exception $e) {
+            \Storage::append('error.log', $this->asset->name);
         }
+    }
+
+    private function getIssuances($name)
+    {
+        return $this->counterparty->execute('get_issuances', [
+            'filters' => [
+                [
+                    'field' => 'asset',
+                    'op'    => '==',
+                    'value' => $name,
+                ],
+                [
+                    'field' => 'status',
+                    'op'    => '==',
+                    'value' => 'valid',
+                ],
+            ],
+        ]);
+    }
+
+    private function find_key_value($array, $key, $val)
+    {
+        foreach($array as $item)
+        {
+            if(is_array($item) && $this->find_key_value($item, $key, $val)) return true;
+
+            if(isset($item[$key]) && $item[$key] == $val) return true;
+        }
+
+        return false;
     }
 }

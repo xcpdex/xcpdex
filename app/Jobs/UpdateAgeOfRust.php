@@ -19,6 +19,11 @@ class UpdateAgeOfRust implements ShouldQueue
      */
     public function handle()
     {
+        $project = \App\Project::firstOrCreate([
+            'name' => 'Age of Rust',
+            'slug' => 'age-of-rust',
+        ]);
+
         $cards = [
             'CRUSADECARD' => [
                 'image_url' => 'https://i.imgur.com/xIi5Q51.jpg',
@@ -64,15 +69,34 @@ class UpdateAgeOfRust implements ShouldQueue
 
         foreach($cards as $card => $data)
         {
-            $asset = \App\Asset::whereName($card)->first();
+            $asset = \App\Asset::whereNull('image_url')->whereName($card)->first();
             if($asset)
             {
+                $project->assets()->save($asset);
+
                 $asset->update([
                     'meta->template' => 'age-of-rust',
                     'meta->asset_url' => 'https://www.ageofrust.games/cards/',
                     'meta->image_url' => $data['image_url'],
                     'meta->number' => $data['number'],
                 ]);
+
+                if(isset($data['image_url']))
+                {
+                    try
+                    {
+                        $contents = file_get_contents($data['image_url']);
+                        $file_name = substr($data['image_url'], strrpos($data['image_url'], '/') + 1);
+                        $file_name = str_replace(explode('.', $file_name)[0], $asset->name, $file_name);
+                        \Storage::put('/public/a/images/' . $file_name, $contents);
+                        $asset->update([
+                            'image_url' => url('/storage/a/images/' . $file_name)
+                        ]);
+                    }
+                    catch (\Exception $e)
+                    {
+                    }
+                }
             }
         }
     }

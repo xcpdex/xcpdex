@@ -19,6 +19,11 @@ class UpdateRarePepe implements ShouldQueue
      */
     public function handle()
     {
+        $project = \App\Project::firstOrCreate([
+            'name' => 'Rare Pepe',
+            'slug' => 'rare-pepe',
+        ]);
+
         $data = file_get_contents('https://rarepepewallet.com/feed');
         $rares = json_decode($data);
 
@@ -27,6 +32,8 @@ class UpdateRarePepe implements ShouldQueue
             $asset = \App\Asset::whereName($rare)->first();
             if($asset)
             {
+                $project->assets()->syncWithoutDetaching([$asset->id]);
+
                 $asset->update([
                     'meta->template' => 'rare-pepe',
                     'meta->asset_url' => 'https://pepewisdom.com/' . $asset->name,
@@ -35,6 +42,27 @@ class UpdateRarePepe implements ShouldQueue
                     'meta->number' => $data->order,
                     'meta->burned' => $data->burned,
                 ]);
+
+                if(isset($data->img_url))
+                {
+                    try
+                    {
+                        $contents = file_get_contents($data->img_url);
+                        $file_name = substr($data->img_url, strrpos($data->img_url, '/') + 1);
+                        $file_name = str_replace(explode('.', $file_name)[0], $asset->name, $file_name);
+                        $file = '/public/a/images/' . $file_name;
+                        if (\Storage::exists($file)) {
+                            \Storage::delete($file);
+                        }
+                        \Storage::put($file, $contents);
+                        $asset->update([
+                            'image_url' => url('/storage/a/images/' . $file_name)
+                        ]);
+                    }
+                    catch (\Exception $e)
+                    {
+                    }
+                }
             }
         }
     }

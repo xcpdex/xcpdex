@@ -19,6 +19,11 @@ class UpdatePenisium implements ShouldQueue
      */
     public function handle()
     {
+        $project = \App\Project::firstOrCreate([
+            'name' => 'Penisium',
+            'slug' => 'penisium',
+        ]);
+
         $images = [
             'https://penisium.org/wp-content/uploads/2017/10/speen.gif',
             'https://penisium.org/wp-content/uploads/2017/09/mcafeepeen.png',
@@ -62,11 +67,30 @@ class UpdatePenisium implements ShouldQueue
             $asset = \App\Asset::whereName($card)->first();
             if($asset)
             {
+                $project->assets()->syncWithoutDetaching([$asset->id]);
+
                 $asset->update([
                     'meta->template' => 'penisium',
                     'meta->asset_url' => 'https://penisium.org/directory/' . $asset->name . '/',
                     'meta->image_url' => $image,
                 ]);
+
+                if(isset($image))
+                {
+                    try
+                    {
+                        $contents = file_get_contents($image);
+                        $file_name = substr($image, strrpos($image, '/') + 1);
+                        $file_name = str_replace(explode('.', $file_name)[0], $asset->name, $file_name);
+                        \Storage::put('/public/a/images/' . $file_name, $contents);
+                        $asset->update([
+                            'image_url' => url('/storage/a/images/' . $file_name)
+                        ]);
+                    }
+                    catch (\Exception $e)
+                    {
+                    }
+                }
             }
         }
     }

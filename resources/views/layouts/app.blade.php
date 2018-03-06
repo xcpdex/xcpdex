@@ -63,8 +63,18 @@
               </a>
             </li>
             <li class="nav-item">
+              <a class="nav-link" href="{{ url(route('blocks.index')) }}">
+                Blocks
+              </a>
+            </li>
+            <li class="nav-item">
               <a class="nav-link" href="{{ url(route('markets.index')) }}">
                 Markets
+              </a>
+            </li>
+             <li class="nav-item">
+              <a class="nav-link" href="{{ url(route('matches.index')) }}">
+                Matches
               </a>
             </li>
             <li class="nav-item">
@@ -72,11 +82,6 @@
                 Orders
               </a>
              </li>
-             <li class="nav-item">
-              <a class="nav-link" href="{{ url(route('matches.index')) }}">
-                Matches
-              </a>
-            </li>
           </ul>
         </nav>
 
@@ -84,7 +89,7 @@
           @yield('content')
           <hr class="mt-4 mb-4" />
           <p class="text-center">
-            <i class="fa fa-envelope text-secondary"></i> <a href="mailto:info@xcpdex.com" target="_blank">Email</a>
+            <i class="fa fa-envelope text-secondary"></i> <a href="mailto:info@xcpdex.com" target="_blank">Contact</a>
             <i class="fa fa-github ml-3 text-secondary"></i> <a href="https://github.com/xcpdex/xcpdex" target="_blank">Github</a>
             <i class="fa fa-telegram ml-3 text-secondary"></i> <a href="https://t.me/xcpdex" target="_blank">Telegram</a>
             <i class="fa fa-twitter ml-3 text-secondary"></i> <a href="https://twitter.com/xcpdex" target="_blank">Twitter</a>

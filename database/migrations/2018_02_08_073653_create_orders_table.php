@@ -27,7 +27,8 @@ class CreateOrdersTable extends Migration
             $table->bigInteger('base_remaining');
             $table->bigInteger('quote_quantity')->unsigned();
             $table->bigInteger('quote_remaining');
-            $table->decimal('exchange_rate', 20, 8)->unsigned();
+            $table->decimal('exchange_rate', 22, 8)->unsigned();
+            $table->decimal('exchange_rate_usd', 22, 8)->unsigned()->nullable();
             $table->bigInteger('fee_paid')->unsigned();
             $table->integer('duration')->unsigned();
             $table->timestamps();

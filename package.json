@@ -21,6 +21,7 @@
     },
     "dependencies": {
         "font-awesome": "^4.7.0",
+        "numeral": "^2.0.6",
         "vue-infinite-loading": "^2.2.3"
     }
 }

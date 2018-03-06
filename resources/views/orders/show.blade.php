@@ -1,25 +1,25 @@
 @extends('layouts.app')
 
 @section('content')
-<h1>Order Details <small class="lead">#{{ $order->tx_index }}</small></h1>
+<h1 class="mb-3">Order Details <small class="lead">#{{ $order->tx_index }}</small></h1>
 <div class="table-responsive">
   <table class="table table-sm table-bordered">
     <tbody>
       <tr>
-        <th>Market</th>
-        <td><a href="{{ url(route('markets.show', ['market' => $order->market->slug])) }}">{{ $order->market->name }}</a></td>
+        <th>TX Hash</th>
+        <td>{{ $order->tx_hash }}</td>
       </tr>
       <tr>
         <th>Type</th>
-        <td class="{{ $order->type == 'buy' ? 'text-success' : 'text-danger' }}">{{ $order->type }}</td>
+        <td class="{{ $order->type == 'buy' ? 'text-success' : 'text-danger' }}">{{ strtoupper($order->type) }}</td>
       </tr>
       <tr>
         <th>Status</th>
         <td>{{ $order->status }}</td>
       </tr>
       <tr>
-        <th>TX Hash</th>
-        <td>{{ $order->tx_hash }}</td>
+        <th>Market</th>
+        <td><a href="{{ url(route('markets.show', ['market' => $order->market->slug])) }}">{{ $order->market->name }}</a></td>
       </tr>
       <tr>
         <th>Source</th>
@@ -50,8 +50,16 @@
         <td>{{ $order->quote_quantity_normalized }}</td>
       </tr>
       <tr>
+        <th>Exchange Rate</th>
+        <td>{{ $order->exchange_rate }}</td>
+      </tr>
+      <tr>
         <th>Duration</th>
         <td>{{ $order->duration }}</td>
+      </tr>
+      <tr>
+        <th>Summary</th>
+        <td>{{ strtoupper($order->type) }} {{ $order->base_quantity_normalized }} {{ $order->market->baseAsset->name }} @ {{ $order->exchange_rate }} {{ $order->market->quoteAsset->name }} ({{ $order->quote_quantity_normalized }} {{ $order->market->quoteAsset->name }})</td>
       </tr>
     </tbody>
   </table>
@@ -62,6 +70,8 @@
     <thead class="text-left">
       <tr>
         <th>Date</th>
+        <th>Type</th>
+        <th>Status</th>
         <th>Price ({{ $order->market->quoteAsset->name }})</th>
         <th>Amount ({{ $order->market->baseAsset->name }})</th>
         <th>Total ({{ $order->market->quoteAsset->name }})</th>
@@ -72,16 +82,20 @@
       @foreach($order->orderMatches()->orderBy('tx_index', 'desc')->get() as $match)
       <tr>
         <td><a href="{{ url(route('orders.show', ['order' => $match->orderMatch->tx_hash])) }}">{{ $match->orderMatch->block->block_time }}</a></td>
+        <td>{{ $match->orderMatch->type }}</td>
+        <td>{{ $match->status }}</td>
         <td class="text-right">{{ $match->orderMatch->exchange_rate }}</td>
         <td class="text-right">{{ $match->base_quantity_normalized }}</td>
         <td class="text-right">{{ $match->quote_quantity_normalized }}</td>
         <td><a href="{{ url(route('addresses.show', ['address' => $match->orderMatch->source])) }}">{{ $match->orderMatch->source }}</a></td>
       </tr>
       @endforeach
-      @if('filled' === $order->status && $order->orderMatchesReverse->count())
+      @if($order->orderMatchesReverse->count())
       @foreach($order->orderMatchesReverse()->orderBy('tx_index', 'desc')->get() as $match)
       <tr>
         <td><a href="{{ url(route('orders.show', ['order' => $match->order->tx_hash])) }}">{{ $match->order->block->block_time }}</a></td>
+        <td>{{ $match->orderMatch->type }}</td>
+        <td>{{ $match->status }}</td>
         <td class="text-right">{{ $match->order->exchange_rate }}</td>
         <td class="text-right">{{ $match->base_quantity_normalized }}</td>
         <td class="text-right">{{ $match->quote_quantity_normalized }}</td>

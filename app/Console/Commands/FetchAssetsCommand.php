@@ -11,7 +11,7 @@ class FetchAssetsCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'fetch:assets';
+    protected $signature = 'fetch:assets {method}';
 
     /**
      * The console command description.
@@ -37,6 +37,19 @@ class FetchAssetsCommand extends Command
      */
     public function handle()
     {
-        \App\Jobs\FetchAssets::dispatch();
+        // create, update, insert, import
+        \App\Jobs\FetchAssets::dispatch($this->argument('method'));
+    }
+
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
+    protected function getArguments()
+    {
+        return [
+            ['method', null, InputArgument::VALUE_REQUIRED, 'Fetch Method'],
+        ];
     }
 }

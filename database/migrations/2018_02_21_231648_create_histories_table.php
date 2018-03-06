@@ -17,7 +17,8 @@ class CreateHistoriesTable extends Migration
             $table->integer('asset_id')->unsigned()->index();
             $table->string('type');
             $table->bigInteger('value')->unsigned()->default(0);
-            $table->timestamp('timestamp');
+            $table->bigInteger('timestamp')->unsigned()->default(0);
+            $table->timestamp('reported_at');
             $table->timestamps();
         });
     }

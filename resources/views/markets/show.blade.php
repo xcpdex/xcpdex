@@ -6,29 +6,55 @@
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script src="https://code.highcharts.com/stock/highstock.js"></script>
 <script src="https://code.highcharts.com/modules/no-data-to-display.js"></script>
+<script src="https://code.highcharts.com/stock/modules/drag-panes.js"></script>
+<script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
 
 <script>
-$.getJSON('https://xcpdex.com/api/charts/{{ $market->slug }}', function (data) {
-    var price = [],
+
+$.getJSON('https://xcpdex.com/api/ohlc/{{ $market->slug }}', function (data) {
+
+    // split the data set into ohlc and volume
+    var ohlc = [],
         volume = [],
         dataLength = data.length,
+        // set the allowed units for data grouping
+        groupingUnits = [[
+            'minute',                         // unit name
+            [10]                             // allowed multiples
+        ], [
+            'hour',                         // unit name
+            [1]                             // allowed multiples
+        ], [
+            'day',                         // unit name
+            [1]                             // allowed multiples
+        ], [
+            'week',                         // unit name
+            [1]                             // allowed multiples
+        ], [
+            'month',
+            [1, 2, 3, 4, 6]
+        ]],
 
         i = 0;
 
     for (i; i < dataLength; i += 1) {
-        price.push([
+        ohlc.push([
             data[i][0], // the date
-            data[i][1], // price
+            data[i][1], // open
+            data[i][2], // high
+            data[i][3], // low
+            data[i][4] // close
         ]);
 
         volume.push([
             data[i][0], // the date
-            data[i][2] // volume
+            data[i][5] // the volume
         ]);
     }
 
-    // Create the chart
-    Highcharts.stockChart('highchart', {
+
+    // create the chart
+    Highcharts.stockChart('ohlc', {
 
         chart: {
             borderColor: '#DFD7CA',
@@ -39,32 +65,20 @@ $.getJSON('https://xcpdex.com/api/charts/{{ $market->slug }}', function (data) {
             selected: 1
         },
 
-        title: {
-            text: ''
-        },
-
-        xAxis: {
-          type: 'datetime',
-          dateTimeLabelFormats: { // don't display the dummy year
-              month: '%e. %b',
-              year: '%b'
-          },
-          title: {
-              text: 'Date'
-          }
-        },
-
         yAxis: [{
             labels: {
                 align: 'right',
                 x: -3
             },
             title: {
-                text: 'Price ({{ $market->quoteAsset->name }})'
+                text: 'OHLC'
             },
+            min: 0,
             height: '60%',
             lineWidth: 2,
-            min: 0,
+            resize: {
+                enabled: true
+            }
         }, {
             labels: {
                 align: 'right',
@@ -79,16 +93,12 @@ $.getJSON('https://xcpdex.com/api/charts/{{ $market->slug }}', function (data) {
             lineWidth: 2
         }],
 
-        exporting: {
-            enabled: false
-        },
-
         tooltip: {
             split: true
         },
 
         rangeSelector: {
-            selected: {{ null !== $last_match && $last_match->orderMatch->block->block_time < \Carbon\Carbon::now()->subMonths(12) ? 7 : 5 }},
+            selected: {{ null !== $last_match && $last_match->orderMatch->block->mined_at < \Carbon\Carbon::now()->subMonths(12) ? 7 : 5 }},
             buttons: [{
                 type: 'hour',
                 count: 6,
@@ -123,30 +133,21 @@ $.getJSON('https://xcpdex.com/api/charts/{{ $market->slug }}', function (data) {
         },
 
         series: [{
-            type: 'line',
-            name: 'Price ({{ $market->quoteAsset->name }})',
-            data: price,
-            tooltip: {
-                valueDecimals: 8
+            type: 'candlestick',
+            name: '{{ $market->baseAsset->name }}',
+            data: ohlc,
+            dataGrouping: {
+                units: groupingUnits
             }
         }, {
             type: 'column',
             name: 'Volume ({{ $market->quoteAsset->name }})',
             data: volume,
             yAxis: 1,
-        }],
-
-    lang: {
-        noData: "No Trades Found"
-    },
-    noData: {
-        style: {
-            fontWeight: 'bold',
-            fontSize: '15px',
-            color: '#303030'
-        }
-    }
-
+            dataGrouping: {
+                units: groupingUnits
+            }
+        }]
     });
 });
 </script>
@@ -154,91 +155,8 @@ $.getJSON('https://xcpdex.com/api/charts/{{ $market->slug }}', function (data) {
 
 @section('sidebar')
 @if(isset($market->baseAsset->meta['template']))
-  @if('rare-pepe' == $market->baseAsset->meta['template'])
-  <img src="{{ $market->baseAsset->meta['image_url'] }}" alt="{{ $market->baseAsset->name }}" width="100%" height="auto" class="mt-3" role="button" data-toggle="modal" data-target="#cardModal" />
-  <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-    <span>Certified Rare</span>
-  </h6>
-  <ul class="nav flex-column">
-    <li class="nav-item">
-      <a href="http://rarepepedirectory.com/?s={{ $market->baseAsset->name }}" class="nav-link" target="_blank">
-        Series {{ $market->baseAsset->meta['series'] }}
-      </a>
-    </li>
-    <li class="nav-item">
-      <a href="http://rarepepedirectory.com/?s={{ $market->baseAsset->name }}" class="nav-link" target="_blank">
-        Card {{ $market->baseAsset->meta['number'] }}
-      </a>
-    </li>
-  </ul>
-  @elseif('age-of-chains' == $market->baseAsset->meta['template']) 
-  <img src="{{ $market->baseAsset->meta['image_url'] }}" alt="{{ $market->baseAsset->name }}" width="100%" height="auto" class="mt-3" role="button" data-toggle="modal" data-target="#cardModal" />
-  <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-    <span>Age of Chains</span>
-  </h6>
-  <ul class="nav flex-column">
-    <li class="nav-item">
-      <a href="{{ $market->baseAsset->meta['asset_url'] }}" class="nav-link" target="_blank">
-        Series {{ $market->baseAsset->meta['series'] }}
-      </a>
-    </li>
-    <li class="nav-item">
-      <a href="{{ $market->baseAsset->meta['asset_url'] }}" class="nav-link" target="_blank">
-        Card {{ $market->baseAsset->meta['number'] }}
-      </a>
-    </li>
-  </ul>
-  @elseif('age-of-rust' == $market->baseAsset->meta['template']) 
-  <img src="{{ $market->baseAsset->meta['image_url'] }}" alt="{{ $market->baseAsset->name }}" width="100%" height="auto" class="mt-3" role="button" data-toggle="modal" data-target="#cardModal" />
-  <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-    <span>Age of Rust</span>
-  </h6>
-  <ul class="nav flex-column">
-    <li class="nav-item">
-      <a href="{{ $market->baseAsset->meta['asset_url'] }}" class="nav-link" target="_blank">
-        Card {{ $market->baseAsset->meta['number'] }}
-      </a>
-    </li>
-  </ul>
-  @elseif('spells-of-genesis' == $market->baseAsset->meta['template']) 
-  <img src="{{ $market->baseAsset->meta['image_url'] }}" alt="{{ $market->baseAsset->name }}" width="100%" height="auto" class="mt-3" role="button" data-toggle="modal" data-target="#cardModal" />
-  <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-    <span>Spells of Genesis</span>
-  </h6>
-  <ul class="nav flex-column">
-    <li class="nav-item">
-      <a href="{{ $market->baseAsset->meta['asset_url'] }}" class="nav-link" target="_blank">
-        Element: {{ ucfirst($market->baseAsset->meta['series']) }}
-      </a>
-      <a href="{{ $market->baseAsset->meta['asset_url'] }}" class="nav-link" target="_blank">
-        Rarity: {{ ucfirst($market->baseAsset->meta['number']) }}
-      </a>
-    </li>
-  </ul>
-  @elseif('penisium' == $market->baseAsset->meta['template']) 
-  <img src="{{ $market->baseAsset->meta['image_url'] }}" alt="{{ $market->baseAsset->name }}" width="100%" height="auto" class="mt-3" role="button" data-toggle="modal" data-target="#cardModal" />
-  <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-    <span>Penisium</span>
-  </h6>
-  <ul class="nav flex-column">
-    <li class="nav-item">
-      <a href="{{ $market->baseAsset->meta['asset_url'] }}" class="nav-link" target="_blank">
-        {{ $market->baseAsset->name }}
-      </a>
-    </li>
-  </ul>
-  @endif
-
-  <div class="modal fade" id="cardModal" tabindex="-1" role="dialog" aria-labelledby="cardModalLabel" aria-hidden="true">
-    <div class="modal-dialog{{ 'age-of-chains' == $market->baseAsset->meta['template'] ? ' modal-lg' : '' }}" role="document">
-      <div class="modal-content">
-        <div class="modal-body">
-          <img src="{{ $market->baseAsset->meta['image_url'] }}" width="100%" height="auto" />
-        </div>
-      </div>
-    </div>
-  </div>
-
+  @include('partials.' . $market->baseAsset->meta['template'], ['asset' => $market->baseAsset])
+  @include('partials.image-modal', ['asset' => $market->baseAsset])
 @endif
 @endsection
 
@@ -254,13 +172,13 @@ $.getJSON('https://xcpdex.com/api/charts/{{ $market->slug }}', function (data) {
         <table class="table table-sm table-bordered text-center">
           <tbody>
             <tr>
-              <td>Last Trade <br><b>{{ $last_match ? $last_match->orderMatch->block->block_time->toDateString() : '' }}</b></td>
-              <td>Price <small>{{ $market->quoteAsset->long_name ? $market->quoteAsset->long_name : $market->quoteAsset->name }}</small><br><b>{{ $last_match ? $last_match->order->exchange_rate : '----------' }}</b></td>
-              <td>Est. Price <small>USD</small><br><b>{{ $last_match ? $last_match->order->exchange_rate_usd : '----------' }}</b></td>
+              <td>Last Price <small>{{ $market->quoteAsset->name }}</small><br><b>{{ $last_match ? $last_match->order->exchange_rate : '----------' }}</b></td>
+              <td>Last Trade <br><b>{{ $last_match ? $last_match->orderMatch->block->mined_at->toDateString() : '----------' }}</b></td>
+              <td>Est. Price <small>USD</small><br><b>{{ $last_match ? $last_match->order->exchange_rate_usd > 1 ? number_format($market->last_price_usd, 2) : $market->last_price_usd : '----------' }}</b></td>
             </tr>
             @if($last_match)
             <tr class="bg-light">
-              <td colspan="3">Market Cap: <b>{{ isset($market->baseAsset->meta['burned']) ? number_format((($market->baseAsset->issuance_normalized - $market->baseAsset->meta['burned'])) * $last_match->order->exchange_rate) : number_format($market->baseAsset->issuance_normalized * $last_match->order->exchange_rate) }} <small>{{ $market->quoteAsset->name }}</small></b> / <b>{{ isset($market->baseAsset->meta['burned']) ? number_format((($market->baseAsset->issuance_normalized - $market->baseAsset->meta['burned'])) * $last_match->order->exchange_rate_usd) : number_format($market->baseAsset->issuance_normalized * $last_match->order->exchange_rate_usd) }} <small>USD</small></b></td>
+              <td colspan="3">Market Cap: <b>{{ number_format($market->quote_market_cap) }} <small>{{ $market->quoteAsset->name }}</small></b> / <b>{{ number_format($market->quote_market_cap_usd) }} <small>USD</small></b></td>
             </tr>
             @endif
           </tbody>
@@ -269,13 +187,17 @@ $.getJSON('https://xcpdex.com/api/charts/{{ $market->slug }}', function (data) {
     </div>
   </div>
 
-  @if($last_order && $last_order->block->block_time < \Carbon\Carbon::now()->subMonths(3))
-  <div class="alert alert-{{ $last_order->block->block_time < \Carbon\Carbon::now()->subMonths(12) ? 'danger' : 'warning' }}" role="alert">
-    <strong>Alert:</strong> No open orders for more than {{ str_replace(' ago', '', $last_order->block->block_time->diffForHumans()) }}.
+  @if($last_order && $last_order->block->mined_at < \Carbon\Carbon::now()->subMonths(3))
+  <div class="alert alert-{{ $last_order->block->mined_at < \Carbon\Carbon::now()->subMonths(12) ? 'danger' : 'warning' }}" role="alert">
+    <strong>Alert:</strong> No orders for the last {{ str_replace(' ago', '', $last_order->block->mined_at->diffForHumans()) }}.
+  </div>
+  @elseif($last_match && $last_match->block->mined_at < \Carbon\Carbon::now()->subMonths(3))
+  <div class="alert alert-{{ $last_order->block->mined_at < \Carbon\Carbon::now()->subMonths(12) ? 'danger' : 'warning' }}" role="alert">
+    <strong>Alert:</strong> No order matches for the last {{ str_replace(' ago', '', $last_match->block->mined_at->diffForHumans()) }}.
   </div>
   @endif
 
-  <div id="highchart" style="height: 450px; min-width: 310px"></div>
+  <div id="ohlc" style="height: 450px; min-width: 310px"></div>
 
   <div class="row">
     <div class="col-md-6">

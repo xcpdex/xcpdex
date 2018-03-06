@@ -5,7 +5,7 @@ namespace App\Commands;
 use Telegram\Bot\Commands\Command;
 
 /**
- * Class StartCommand
+ * Class TelegramStartCommand
  */
 class TelegramStartCommand extends Command
 {
