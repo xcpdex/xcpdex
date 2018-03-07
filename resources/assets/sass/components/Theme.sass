@@ -43,13 +43,21 @@ body
   border-width: 0
   border-radius: 0
 
-.form-control-dark
-  color: #fff
-  background-color: rgba(255, 255, 255, 0.1)
-  border-color: rgba(255, 255, 255, 0.1)
-  &:focus
-    border-color: transparent
-    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.25)
+.navbar .nav-item a
+  font-weight: 500
+  color: rgba(255,255,255, 0.5)
+  &:hover
+    color: rgba(255,255,255, 0.65)
+
+.form-control-dark,
+.autocomplete__inputs input
+  color: #fff !important
+  text-transform: uppercase
+  background-color: rgba(73, 78, 83, 1) !important
+  border-color: rgba(73, 78, 83, 1) !important
+
+.autocomplete--clear img
+  vertical-align: top
 
 /*
  * Utilities
@@ -67,6 +75,7 @@ body
 .asset-markets
   max-height: 500px
 
+.block-data .table,
 .order-book .table,
 .order-matches .table,
 .asset-markets .table

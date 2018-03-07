@@ -42,10 +42,7 @@ class UpdateBlocks implements ShouldQueue
         {
             $block = $this->updateOrCreateBlock($data);
 
-            if($block->wasRecentlyCreated)
-            {
-                $this->processMessages($data['_messages']);
-            }
+            $this->processMessages($data['_messages']);
         }
     }
 
@@ -197,7 +194,7 @@ class UpdateBlocks implements ShouldQueue
             'exchange_rate_usd' => $order->exchange_rate_usd,
         ]);
 
-        \App\Jobs\UpdateMarketSummary::dispatch($order_match->market);
+        // \App\Jobs\UpdateMarketSummary::dispatch($order_match->market);
     }
 
     private function updateOrderMatch($message)
@@ -216,7 +213,7 @@ class UpdateBlocks implements ShouldQueue
             'status' => $data['status'],
         ]);
 
-        \App\Jobs\UpdateMarketSummary::dispatch($order_match->market);
+        // \App\Jobs\UpdateMarketSummary::dispatch($order_match->market);
     }
 
     private function getData($message)
@@ -262,7 +259,7 @@ class UpdateBlocks implements ShouldQueue
 
         if(! $price) return null;
 
-        return bcdiv($exchange_rate * $price->value, 100, 8);
+        return bcdiv($exchange_rate * $price->value, 100000000, 8);
     }
 
     private function getQuoteQuantityUsd($asset, $quote_quantity, $block_index)
@@ -279,7 +276,7 @@ class UpdateBlocks implements ShouldQueue
 
         if($asset->divisible) $quote_quantity = fromSatoshi($quote_quantity);
 
-        return bcdiv($quote_quantity * $price->value, 100, 8);
+        return bcdiv($quote_quantity * $price->value, 100000000, 8);
     }
 
     private function getAssetPairFromAssets($asset1, $asset2)
@@ -297,6 +294,6 @@ class UpdateBlocks implements ShouldQueue
 
     private function getQuoteAssets()
     {
-        return ['BTC', 'XCP', 'XBTC', 'SJCX', 'PEPECASH', 'BITCRYSTALS', 'WILLCOIN', 'LTBCOIN', 'FLDC', 'RUSTBITS', 'DATABITS', 'PENISIUM', 'XFCCOIN', 'SWARM'];
+        return ['BTC', 'XCP', 'XBTC', 'SJCX', 'PEPECASH', 'BITCRYSTALS', 'WILLCOIN', 'LTBCOIN', 'FLDC', 'RUSTBITS', 'DATABITS', 'PENISIUM', 'XFCCOIN', 'SWARM', 'CROPS', 'BITCORN'];
     }
 }

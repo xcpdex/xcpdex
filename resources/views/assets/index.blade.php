@@ -1,32 +1,32 @@
 @extends('layouts.app')
 
-@section('title', 'Assets')
+@section('title', 'Counterparty Decentralized Exchange')
 
 @section('content')
-<h1 class="mb-3">Assets <small class="lead">{{ $assets->total() }} Found</small></h1>
+<h1 class="mb-3">Counterparty Dex <small class="lead">{{ $assets->total() }} Assets</small></h1>
 <div class="table-responsive">
   <table class="table table-striped table-sm">
     <thead class="text-left">
       <tr>
         <th>#</th>
         <th>Asset</th>
+        <th>Volume <small>USD</small></th>
         <th>Orders</th>
-        <th>Base Markets</th>
-        <th>Quote Markets</th>
+        <th>Matches</th>
       </tr>
     </thead>
     <tbody>
       @foreach($assets as $asset)
       <tr>
-        <th><img src="{{ isset($asset->meta['icon_url']) ? $asset->meta['icon_url'] : asset('/img/token.png')}}" width="24" /></th>
+        <th><img src="{{ $asset->display_icon_url }}" height="22" /></th>
         <td><a href="{{ url(route('assets.show', ['asset' => $asset->name])) }}">{{ $asset->long_name ? $asset->long_name : $asset->name }}</a></td>
-        <td><a href="{{ url(route('assets.show', ['asset' => $asset->name])) }}">{{ $asset->orders_count }}</a></td>
-        <td><a href="{{ url(route('assets.show', ['asset' => $asset->name])) }}">{{ $asset->base_markets_count }}</a></td>
-        <td><a href="{{ url(route('assets.show', ['asset' => $asset->name])) }}">{{ $asset->quote_markets_count }}</a></td>
+        <td><a href="{{ url(route('assets.show', ['asset' => $asset->name])) }}">${{ number_format($asset->volume_total_usd) }}</a></td>
+        <td><a href="{{ url(route('assets.show', ['asset' => $asset->name])) }}">{{ number_format($asset->orders_total) }}</a></td>
+        <td><a href="{{ url(route('assets.show', ['asset' => $asset->name])) }}">{{ number_format($asset->order_matches_total) }}</a></td>
       </tr>
       @endforeach
     </tbody>
   </table>
 </div>
-{!! $assets->links() !!}
+{!! $assets->links('pagination::bootstrap-4') !!}
 @endsection

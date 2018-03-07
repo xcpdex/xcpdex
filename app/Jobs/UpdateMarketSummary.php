@@ -31,6 +31,26 @@ class UpdateMarketSummary implements ShouldQueue
      */
     public function handle()
     {
+        $base_asset_volume_total_usd = $this->market->baseAsset->baseMarketsOrderMatches()->sum('quote_quantity_usd') + $this->market->baseAsset->quoteMarketsOrderMatches()->sum('quote_quantity_usd');
+        $base_asset_orders_total = $this->market->baseAsset->baseMarketsOrders()->count() + $this->market->baseAsset->quoteMarketsOrders()->count();
+        $base_asset_order_matches_total = $this->market->baseAsset->baseMarketsOrderMatches->count() + $this->market->baseAsset->quoteMarketsOrderMatches->count();
+
+        $this->market->baseAsset->update([
+            'volume_total_usd' => $base_asset_volume_total_usd,
+            'orders_total' => $base_asset_orders_total,
+            'order_matches_total' => $base_asset_order_matches_total,
+        ]);
+
+        $quote_asset_volume_total_usd = $this->market->quoteAsset->baseMarketsOrderMatches()->sum('quote_quantity_usd') + $this->market->quoteAsset->quoteMarketsOrderMatches()->sum('quote_quantity_usd');
+        $quote_asset_orders_total = $this->market->quoteAsset->baseMarketsOrders()->count() + $this->market->quoteAsset->quoteMarketsOrders()->count();
+        $quote_asset_order_matches_total = $this->market->quoteAsset->baseMarketsOrderMatches->count() + $this->market->quoteAsset->quoteMarketsOrderMatches->count();
+
+        $this->market->quoteAsset->update([
+            'volume_total_usd' => $quote_asset_volume_total_usd,
+            'orders_total' => $quote_asset_orders_total,
+            'order_matches_total' => $quote_asset_order_matches_total,
+        ]);
+
         $base_volume = $this->market->orderMatches()->sum('base_quantity');
         $last_price_usd = $this->market->lastMatch && $this->market->lastMatch->order->exchange_rate_usd ? $this->market->lastMatch->order->exchange_rate_usd : 0;
         $quote_volume = $this->market->orderMatches()->sum('quote_quantity');

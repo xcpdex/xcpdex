@@ -32,7 +32,7 @@ class UpdatePepeCashHistory implements ShouldQueue
                 \App\History::firstOrCreate([
                     'asset_id' => $asset->id,
                     'type' => 'price',
-                    'value' => $line[1] * 100,
+                    'value' => $line[1],
                     'timestamp' => \Carbon\Carbon::parse($line[0], 'America/New_York')->timestamp,
                 ],[
                     'reported_at' => \Carbon\Carbon::parse($line[0], 'America/New_York')->toDateTimeString(),

@@ -12,7 +12,7 @@ class Asset extends Model
      * @var array
      */
     protected $fillable = [
-         'name', 'long_name', 'description', 'icon_url', 'image_url', 'issuance', 'divisible', 'locked', 'enhanced', 'processed', 'meta->description', 'meta->template', 'meta->asset_url', 'meta->image_url', 'meta->icon_url', 'meta->series', 'meta->number', 'meta->burned',
+         'name', 'long_name', 'description', 'icon_url', 'image_url', 'issuance', 'divisible', 'locked', 'volume_total_usd', 'orders_total', 'order_matches_total', 'enhanced', 'processed', 'meta->description', 'meta->template', 'meta->asset_url', 'meta->image_url', 'meta->icon_url', 'meta->series', 'meta->number', 'meta->burned',
     ];
 
     /**
@@ -21,7 +21,7 @@ class Asset extends Model
      * @var array
      */
     protected $appends = [
-        'display_description', 'display_icon_url', 'issuance_normalized',
+        'display_name', 'display_description', 'display_icon_url', 'issuance_normalized',
     ];
 
     /**
@@ -32,6 +32,16 @@ class Asset extends Model
     protected $casts = [
         'meta' => 'array',
     ];
+
+    /**
+     * Display Name
+     *
+     * @return string
+     */
+    public function getDisplayNameAttribute()
+    {
+        return $this->long_name ? $this->long_name : $this->name;
+    }
 
     /**
      * Display Description

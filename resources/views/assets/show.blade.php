@@ -22,9 +22,9 @@
           <tbody>
             <tr>
               <td><img src="{{ $asset->display_icon_url }}" height="44" /></td>
-              <td>Volume <small>USD</small> <br /><b>{{ number_format($total_volume) }}</b></td>
-              <td>Orders <br /><b>{{ number_format($total_orders) }}</b></td>
-              <td>Matches <br /><b>{{ number_format($total_matches) }}</b></td>
+              <td title="All-Time">Volume <small>USD</small> <br /><b>${{ number_format($asset->volume_total_usd, 2) }}</b></td>
+              <td title="All-Time">Orders <br /><b>{{ number_format($asset->orders_total) }}</b></td>
+              <td title="All-Time">Matches <br /><b>{{ number_format($asset->order_matches_total) }}</b></td>
             </tr>
             <tr class="bg-light">
               @if(isset($asset->meta['burned']) && $asset->meta['burned'])
@@ -39,6 +39,6 @@
     </div>
   </div>
 
-  <asset-markets asset="{{ $asset->name }}" filter="{{ $request->input('filter', 'index') }}" order_by="{{ $request->input('order_by', 'quote_market_cap_usd') }}" direction="{{ $request->input('direction', 'desc') }}"></asset-markets>
+  <asset-markets asset="{{ $asset->name }}" filter="{{ $request->input('filter', 'index') }}" order_by="{{ $request->input('order_by', 'quote_volume_usd') }}" direction="{{ $request->input('direction', 'desc') }}"></asset-markets>
 
 @endsection

@@ -39,7 +39,7 @@ class UpdateBlocksCommand extends Command
     {
         $block = \App\Block::orderBy('block_index', 'desc')->first();
 
-        $first_block = $block ? $block->block_index : 278319;
+        $first_block = $block ? $block->block_index - 144 : 278319;
 
         if(\Cache::get('block_height') - $first_block < 100)
         {

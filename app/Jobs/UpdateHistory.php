@@ -59,7 +59,7 @@ class UpdateHistory implements ShouldQueue
             \App\History::firstOrCreate([
                 'asset_id' => $asset->id,
                 'type' => 'price',
-                'value' => $result[1] * 100,
+                'value' => $result[1] * 100000000,
                 'timestamp' => $result[0] / 1000,
             ],[
                 'reported_at' => \Carbon\Carbon::createFromTimestamp($result[0] / 1000, 'America/New_York'),

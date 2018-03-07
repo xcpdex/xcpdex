@@ -25,9 +25,14 @@ Route::get('/testing', function () {
     return view('test');
 });
 
-Route::get('/assets', [
+Route::get('/home', [
     'as' => 'assets.index',
     'uses' => 'AssetsController@index',
+]);
+
+Route::get('/mempool', [
+    'as' => 'mempool.index',
+    'uses' => 'MempoolController@index',
 ]);
 
 Route::get('/asset/{asset}', [

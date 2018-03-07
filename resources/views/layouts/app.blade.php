@@ -19,33 +19,43 @@
 <div id="app">
 
     <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
-      <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="{{ url('/') }}">
+      <a class="navbar-brand col-5 col-sm-3 col-md-2 mr-0" href="{{ url(route('assets.index')) }}">
         <img src="{{ asset('/img/logo.png') }}" alt="{{ env('APP_NAME') }}" class="mt-2 mr-1" /> {{ env('APP_NAME') }}
       </a>
-      <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
-      @if(Auth::check())
-      <ul class="navbar-nav px-3">
-        <li class="nav-item text-nowrap">
-          <a href="{{ route('logout') }}" class="nav-link" 
-            onclick="event.preventDefault();
-              document.getElementById('logout-form').submit();">
-            {{ __('Signout') }}
-          </a>
-
-          <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-            {{ csrf_field() }}
-          </form>
-        </li>
-      </ul>
-      @else
-      <ul class="navbar-nav px-3">
-        <li class="nav-item text-nowrap">
-          <a href="https://t.me/xcpdex" class="nav-link" target="_blank">
-            {{ __('Telegram') }}
-          </a>
-        </li>
-      </ul>
-      @endif
+      <div class="col-7 col-sm-9 col-md-4 p-0">
+        <auto-suggest></auto-suggest>
+      </div>
+      <div class="col-md-6">
+        <ul class="nav nav-pills float-right">
+          <li class="nav-item">
+            <a class="nav-link" href="https://t.me/xcpdex" target="_blank">
+              <i class="fa fa-telegram fa-lg text-info"></i>
+            </a>
+          </li>
+        </ul>
+        <ul class="nav nav-pills">
+          <li class="nav-item d-none d-sm-inline">
+            <a class="nav-link" href="{{ url(route('assets.index')) }}">
+              Home
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url(route('markets.index')) }}">
+              Markets
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url(route('orders.index')) }}">
+              Orders
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url(route('matches.index')) }}">
+              Matches
+            </a>
+          </li>
+        </ul>
+      </div>
     </nav>
 
     <div class="container-fluid">
@@ -63,25 +73,35 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{{ url(route('blocks.index')) }}">
-                Blocks
-              </a>
-            </li>
-            <li class="nav-item">
               <a class="nav-link" href="{{ url(route('markets.index')) }}">
                 Markets
-              </a>
-            </li>
-             <li class="nav-item">
-              <a class="nav-link" href="{{ url(route('matches.index')) }}">
-                Matches
               </a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="{{ url(route('orders.index')) }}">
                 Orders
               </a>
-             </li>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url(route('matches.index')) }}">
+                Matches
+              </a>
+            </li>
+          </ul>
+          <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+            <span>Blockchain</span>
+          </h6>
+          <ul class="nav flex-column">
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url(route('blocks.index')) }}">
+                Blocks
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url(route('mempool.index')) }}">
+                Mempool
+              </a>
+            </li>
           </ul>
         </nav>
 
@@ -107,5 +127,14 @@
 
 <!-- Scripts -->
 <script src="{{ asset('js/app.js') }}"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-112477384-3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', '{{ env('GA_TRACKING_ID') }}');
+</script>
 </body>
 </html>

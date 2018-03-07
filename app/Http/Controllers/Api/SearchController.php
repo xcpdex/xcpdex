@@ -1,25 +1,20 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
-class AssetsController extends Controller
+class SearchController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        $assets = \Cache::remember('assets_index_' . $request->input('page', 1), 360, function() {
-            return \App\Asset::has('baseMarkets')->orHas('quoteMarkets')
-                ->orderBy('volume_total_usd', 'desc')
-                ->paginate(100);
-        });
-
-        return view('assets.index', compact('assets'));
+        //
     }
 
     /**
@@ -46,16 +41,26 @@ class AssetsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  string  $slug
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, $slug)
+    public function show(Request $request)
     {
-        $asset = \Cache::remember('assets_show_' . $slug, 360, function() use($slug) {
-            return \App\Asset::whereName($slug)->first();
-        });
+        $request->validate([
+            'q' => 'required',
+        ]);
 
-        return view('assets.show', compact('asset', 'request'));
+        $assets = \App\Asset::has('baseMarkets')
+            ->where('name', 'like', $request->q . '%')
+            ->orHas('quoteMarkets')
+            ->where('name', 'like', $request->q . '%')
+            ->orderBy('volume_total_usd', 'desc')
+            ->take(10)
+            ->get();
+
+        return \Cache::remember('api_search_' . $request->q, 360, function() use($assets) {
+            return \App\Http\Resources\AssetResource::collection($assets);
+        });
     }
 
     /**

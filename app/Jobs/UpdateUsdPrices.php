@@ -48,6 +48,11 @@ class UpdateUsdPrices implements ShouldQueue
                 ->where('block_index', '>', $order->block_index - 288)
                 ->avg('exchange_rate_usd');
 
+            $last_match_possibly_long_ago = $usd_volume_market->orderMatches()
+                ->where('block_index', '<', $order->block_index)
+                ->orderBy('block_index', 'desc')
+                ->first();
+
             if($exact_match_data)
             {
                 $exchange_rate_usd = sprintf("%.8f", (float)$order->exchange_rate * $exact_match_data->exchange_rate_usd);
@@ -63,6 +68,10 @@ class UpdateUsdPrices implements ShouldQueue
             elseif($extra_extra_fuzzy_match_data)
             {
                 $exchange_rate_usd = sprintf("%.8f", (float)$order->exchange_rate * $extra_extra_fuzzy_match_data);
+            }
+            elseif($last_match_possibly_long_ago)
+            {
+                $exchange_rate_usd = sprintf("%.8f", (float)$order->exchange_rate * $last_match_possibly_long_ago->exchange_rate_usd);
             }
             else
             {

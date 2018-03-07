@@ -6,79 +6,56 @@
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script src="https://code.highcharts.com/stock/highstock.js"></script>
 <script src="https://code.highcharts.com/modules/no-data-to-display.js"></script>
-<script src="https://code.highcharts.com/stock/modules/drag-panes.js"></script>
-<script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
 
 <script>
-
-$.getJSON('https://xcpdex.com/api/ohlc/{{ $market->slug }}', function (data) {
-
-    // split the data set into ohlc and volume
-    var ohlc = [],
+$.getJSON('https://xcpdex.com/api/charts/{{ $market->slug }}', function (data) {
+    var price = [],
         volume = [],
         dataLength = data.length,
-        // set the allowed units for data grouping
-        groupingUnits = [[
-            'minute',                         // unit name
-            [10]                             // allowed multiples
-        ], [
-            'hour',                         // unit name
-            [1]                             // allowed multiples
-        ], [
-            'day',                         // unit name
-            [1]                             // allowed multiples
-        ], [
-            'week',                         // unit name
-            [1]                             // allowed multiples
-        ], [
-            'month',
-            [1, 2, 3, 4, 6]
-        ]],
-
         i = 0;
-
     for (i; i < dataLength; i += 1) {
-        ohlc.push([
+        price.push([
             data[i][0], // the date
-            data[i][1], // open
-            data[i][2], // high
-            data[i][3], // low
-            data[i][4] // close
+            data[i][1], // price
         ]);
-
         volume.push([
             data[i][0], // the date
-            data[i][5] // the volume
+            data[i][2] // volume
         ]);
     }
-
-
-    // create the chart
-    Highcharts.stockChart('ohlc', {
-
+    // Create the chart
+    Highcharts.stockChart('chart', {
         chart: {
             borderColor: '#DFD7CA',
             borderWidth: 1,
         },
-
         rangeSelector: {
             selected: 1
         },
-
+        title: {
+            text: ''
+        },
+        xAxis: {
+          type: 'datetime',
+          dateTimeLabelFormats: { // don't display the dummy year
+              month: '%e. %b',
+              year: '%b'
+          },
+          title: {
+              text: 'Date'
+          }
+        },
         yAxis: [{
             labels: {
                 align: 'right',
                 x: -3
             },
             title: {
-                text: 'OHLC'
+                text: 'Price ({{ $market->quoteAsset->name }})'
             },
-            min: 0,
             height: '60%',
             lineWidth: 2,
-            resize: {
-                enabled: true
-            }
+            min: 0,
         }, {
             labels: {
                 align: 'right',
@@ -92,11 +69,12 @@ $.getJSON('https://xcpdex.com/api/ohlc/{{ $market->slug }}', function (data) {
             offset: 0,
             lineWidth: 2
         }],
-
+        exporting: {
+            enabled: false
+        },
         tooltip: {
             split: true
         },
-
         rangeSelector: {
             selected: {{ null !== $last_match && $last_match->orderMatch->block->mined_at < \Carbon\Carbon::now()->subMonths(12) ? 7 : 5 }},
             buttons: [{
@@ -131,23 +109,29 @@ $.getJSON('https://xcpdex.com/api/ohlc/{{ $market->slug }}', function (data) {
                 text: 'All'
             }]
         },
-
         series: [{
-            type: 'candlestick',
-            name: '{{ $market->baseAsset->name }}',
-            data: ohlc,
-            dataGrouping: {
-                units: groupingUnits
+            type: 'line',
+            name: 'Price ({{ $market->quoteAsset->name }})',
+            data: price,
+            tooltip: {
+                valueDecimals: 8
             }
         }, {
             type: 'column',
             name: 'Volume ({{ $market->quoteAsset->name }})',
             data: volume,
             yAxis: 1,
-            dataGrouping: {
-                units: groupingUnits
-            }
-        }]
+        }],
+    lang: {
+        noData: "No Trades Found"
+    },
+    noData: {
+        style: {
+            fontWeight: 'bold',
+            fontSize: '15px',
+            color: '#303030'
+        }
+    }
     });
 });
 </script>
@@ -172,8 +156,8 @@ $.getJSON('https://xcpdex.com/api/ohlc/{{ $market->slug }}', function (data) {
         <table class="table table-sm table-bordered text-center">
           <tbody>
             <tr>
-              <td>Last Price <small>{{ $market->quoteAsset->name }}</small><br><b>{{ $last_match ? $last_match->order->exchange_rate : '----------' }}</b></td>
               <td>Last Trade <br><b>{{ $last_match ? $last_match->orderMatch->block->mined_at->toDateString() : '----------' }}</b></td>
+              <td>Last Price <small>{{ $market->quoteAsset->name }}</small><br><b>{{ $last_match ? $last_match->order->exchange_rate : '----------' }}</b></td>
               <td>Est. Price <small>USD</small><br><b>{{ $last_match ? $last_match->order->exchange_rate_usd > 1 ? number_format($market->last_price_usd, 2) : $market->last_price_usd : '----------' }}</b></td>
             </tr>
             @if($last_match)
@@ -197,7 +181,7 @@ $.getJSON('https://xcpdex.com/api/ohlc/{{ $market->slug }}', function (data) {
   </div>
   @endif
 
-  <div id="ohlc" style="height: 450px; min-width: 310px"></div>
+  <div id="chart" style="height: 450px; min-width: 310px"></div>
 
   <div class="row">
     <div class="col-md-6">

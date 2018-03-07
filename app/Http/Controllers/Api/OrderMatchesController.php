@@ -16,6 +16,6 @@ class OrderMatchesController extends Controller
     {
         $market = \App\Market::whereSlug($slug)->firstOrFail();
 
-        return $market->orderMatches()->whereStatus('completed')->with('order', 'orderMatch', 'orderMatch.block')->orderBy('tx_index', 'desc')->paginate(100);
+        return $market->orderMatches()->whereStatus('completed')->with('order', 'orderMatch', 'orderMatch.block')->orderBy('tx_index', 'desc')->paginate(30);
     }
 }
