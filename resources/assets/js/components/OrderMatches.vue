@@ -1,5 +1,5 @@
 <template>
-<div class="table-responsive order-matches">
+<div class="table-responsive order-matches" infinite-wrapper>
   <table class="table table-striped table-sm">
     <thead class="text-left">
       <tr>
@@ -25,7 +25,7 @@
       <tr v-if="matches.length == 0">
         <td class="text-center" colspan="7">No order matches found.</td>
       </tr>
-      <infinite-loading @infinite="infiniteHandler">
+      <infinite-loading force-use-infinite-wrapper="true" @infinite="infiniteHandler">
         <span slot="no-more"></span>
         <span slot="no-results"></span>
       </infinite-loading>
@@ -50,8 +50,9 @@
 
     methods: {
       infiniteHandler($state) {
-        fetch('/api/matches/' + this.market + '?page=' + this.page).then((response) => {
-          return response.json().then((json) => {
+        axios.get('/api/matches/' + this.market + '?page=' + this.page)
+        .then(response => {
+            var json = response.data
             this.page = json.current_page + 1
             if (json.data.length) {
               this.matches = this.matches.concat(json.data);
@@ -62,7 +63,6 @@
             } else {
               $state.complete();
             }
-          })
         });
       },
     },

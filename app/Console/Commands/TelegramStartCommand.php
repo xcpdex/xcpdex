@@ -1,12 +1,9 @@
 <?php
 
-namespace App\Commands;
+namespace App\Console\Commands;
 
 use Telegram\Bot\Commands\Command;
 
-/**
- * Class TelegramStartCommand
- */
 class TelegramStartCommand extends Command
 {
     /**
@@ -30,8 +27,7 @@ class TelegramStartCommand extends Command
     public function handle($arguments)
     {
         $update = $this->getUpdate();
-        $name = $update->getMessage()->from->firstName;
-        $text = "Hello, $name! Welcome to the xcp dex bot!\nType /help to get a list of available commands.";
+        $text = "Hello, Welcome to the xcp dex bot!\nType /help to get a list of available commands.";
         $this->replyWithMessage(['text' => $text]);
     }
 }

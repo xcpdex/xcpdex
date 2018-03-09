@@ -50,15 +50,12 @@ class SearchController extends Controller
             'q' => 'required',
         ]);
 
-        $assets = \App\Asset::has('baseMarkets')
-            ->where('name', 'like', $request->q . '%')
-            ->orHas('quoteMarkets')
-            ->where('name', 'like', $request->q . '%')
-            ->orderBy('volume_total_usd', 'desc')
-            ->take(10)
-            ->get();
+        return \Cache::remember('api_search_' . $request->q, 360, function() use($request) {
+            $assets = \App\Asset::where('name', 'like', $request->q . '%')
+                ->orderBy('volume_total_usd', 'desc')
+                ->take(10)
+                ->get();
 
-        return \Cache::remember('api_search_' . $request->q, 360, function() use($assets) {
             return \App\Http\Resources\AssetResource::collection($assets);
         });
     }

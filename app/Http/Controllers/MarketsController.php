@@ -11,20 +11,9 @@ class MarketsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $markets = \Cache::remember('markets.index', 10, function() {
-            $block_index = \Cache::get('block_height') - 13140;
-            return \App\Market::has('orderMatches', '>', 50)
-                ->whereHas('orderMatches', function ($query) use ($block_index) {
-                    $query->where('block_index', '>', $block_index);
-                })
-                ->withCount('openOrders', 'orders', 'orderMatches')
-                ->orderBy('quote_market_cap_usd', 'desc')
-                ->paginate(100);
-        });
-
-        return view('markets.index', compact('markets'));
+        return view('markets.index', compact('request'));
     }
 
     /**

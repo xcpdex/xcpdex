@@ -46,6 +46,7 @@ return [
             'host' => 'localhost',
             'queue' => 'default',
             'retry_after' => 3600,
+            'ttr' => 3600,
         ],
 
         'sqs' => [

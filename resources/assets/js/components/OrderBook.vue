@@ -51,12 +51,12 @@
 
     created: function() {
       let vm = this
-      fetch('/api/orders/' + this.market).then((response) => {
-        return response.json().then((json) => {
-          this.orders = this.orders.concat(this.side == 'buy' ? json.buy_orders : json.sell_orders)
-          this.baseAsset = json.base_asset.name
-          this.quoteAsset = json.quote_asset.name
-        })
+      axios.get('/api/orders/' + this.market)
+      .then(response => {
+        var json = response.data
+        this.orders = this.orders.concat(this.side == 'buy' ? json.buy_orders : json.sell_orders)
+        this.baseAsset = json.base_asset.name
+        this.quoteAsset = json.quote_asset.name
       })
     },
 

@@ -1,12 +1,9 @@
 <?php
 
-namespace App\Commands;
+namespace App\Console\Commands;
 
 use Telegram\Bot\Commands\Command;
 
-/**
- * Class TelegramMarketCommand
- */
 class TelegramMarketCommand extends Command
 {
     /**
@@ -25,7 +22,7 @@ class TelegramMarketCommand extends Command
     public function handle($arguments)
     {
         $update = $this->getUpdate();
-        $market = trim($update->getMessage()->getText());
+        $market = trim(str_replace('/market', '', $update->getMessage()->getText()));
 
         try
         {
@@ -52,7 +49,9 @@ class TelegramMarketCommand extends Command
             $last_price = $last ? $last->order->exchange_rate : '--------';
             $last_price_usd = $last ? $last->order->exchange_rate_usd : '--------';
 
-            $this->replyWithMessage(['text' => "Bid: {$bid_price}\nAsk: {$ask_price}\nLast: {$last_price}\n"]);
+            $link_to = url(route('markets.show', ['market' => $market->slug]));
+
+            $this->replyWithMessage(['text' => "{$link_to}\n\n{$market->quoteAsset->name}\nAsk: {$ask_price}\nLast: {$last_price}\nBid: {$bid_price}\n\nUSD\nAsk: {$ask_price_usd}\nLast: {$last_price_usd}\nBid: {$bid_price_usd}"]);
 
         }
         catch(\Exception $e)

@@ -15,6 +15,7 @@ class AssetsController extends Controller
     {
         $assets = \Cache::remember('assets_index_' . $request->input('page', 1), 360, function() {
             return \App\Asset::has('baseMarkets')->orHas('quoteMarkets')
+                ->withCount('baseMarkets', 'quoteMarkets')
                 ->orderBy('volume_total_usd', 'desc')
                 ->paginate(100);
         });

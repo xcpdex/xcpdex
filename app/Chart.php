@@ -12,7 +12,7 @@ class Chart extends Model
      * @var array
      */
     protected $fillable = [
-         'market_id', 'block_index', 'open', 'high', 'low', 'close', 'volume', 'price_usd',
+         'market_id', 'block_index', 'open', 'high', 'low', 'close', 'midline', 'volume', 'market_cap', 'market_cap_usd', 'volume_usd', 'price_usd',
     ];
 
     /**

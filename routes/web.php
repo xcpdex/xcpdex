@@ -11,7 +11,22 @@
 |
 */
 
-Route::get('/', 'HomeController@index')->name('home');
+Route::get('/', function () {
+    return view('welcome');
+});
+
+Auth::routes();
+
+Route::middleware(['auth'])->group(function () {
+
+Route::get('/home', [
+    'as' => 'home',
+    'uses' => 'HomeController@index',
+]);
+
+Route::get('/disclaimer', function () {
+    return view('disclaimer');
+});
 
 Route::get('/privacy', function () {
     return view('privacy');
@@ -25,9 +40,9 @@ Route::get('/testing', function () {
     return view('test');
 });
 
-Route::get('/home', [
-    'as' => 'assets.index',
-    'uses' => 'AssetsController@index',
+Route::get('/search', [
+    'as' => 'search.index',
+    'uses' => 'SearchController@index',
 ]);
 
 Route::get('/mempool', [
@@ -35,9 +50,19 @@ Route::get('/mempool', [
     'uses' => 'MempoolController@index',
 ]);
 
+Route::get('/assets', [
+    'as' => 'assets.index',
+    'uses' => 'AssetsController@index',
+]);
+
 Route::get('/asset/{asset}', [
     'as' => 'assets.show',
     'uses' => 'AssetsController@show',
+]);
+
+Route::get('/projects', [
+    'as' => 'projects.index',
+    'uses' => 'ProjectsController@index',
 ]);
 
 Route::get('/project/{project}', [
@@ -94,8 +119,8 @@ Route::get('/tx/{tx_hash}', [
     'uses' => 'OrdersController@show',
 ]);
 
-Auth::routes();
-
 Route::get('/{asset}', function ($asset) {
     return redirect(route('assets.show', ['asset' => $asset]));
+});
+
 });

@@ -18,14 +18,44 @@ Route::get('/search', [
     'uses' => 'Api\SearchController@show',
 ]);
 
+Route::get('/assets', [
+    'as' => 'api.assets.index',
+    'uses' => 'Api\AssetsController@index',
+]);
+
+Route::get('/assets/{project}', [
+    'as' => 'api.assets.show',
+    'uses' => 'Api\AssetsController@show',
+]);
+
+Route::get('/markets', [
+    'as' => 'api.markets.index',
+    'uses' => 'Api\MarketsController@index',
+]);
+
 Route::get('/markets/{asset}', [
     'as' => 'api.markets.show',
     'uses' => 'Api\MarketsController@show',
 ]);
 
+Route::get('/orders', [
+    'as' => 'api.orders.index',
+    'uses' => 'Api\OrdersController@index',
+]);
+
+Route::get('/orders/address/{source}', [
+    'as' => 'api.orders.address',
+    'uses' => 'Api\OrdersController@byAddress',
+]);
+
 Route::get('/orders/{market}', [
     'as' => 'api.orders.show',
     'uses' => 'Api\OrdersController@show',
+]);
+
+Route::get('/matches', [
+    'as' => 'api.orderMatches.index',
+    'uses' => 'Api\OrderMatchesController@index',
 ]);
 
 Route::get('/matches/{market}', [
@@ -36,6 +66,11 @@ Route::get('/matches/{market}', [
 Route::get('/charts/{market}', [
     'as' => 'api.highCharts.show',
     'uses' => 'Api\HighChartsController@show',
+]);
+
+Route::get('/sources/{side}/{market}', [
+    'as' => 'api.sources.show',
+    'uses' => 'Api\SourcesController@show',
 ]);
 
 Route::get('/ohlc/{market}', [

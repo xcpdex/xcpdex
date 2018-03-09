@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class OrdersController extends Controller
@@ -11,11 +12,14 @@ class OrdersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $markets = \App\Market::withCount('orders', 'orderMatches')->paginate(100);
-
-        return $markets;
+        return \Cache::remember('api_orders_' . $request->input('page', 1), 5, function() {
+            return \App\Order::has('block')
+                ->with('block')
+                ->orderBy('tx_index', 'desc')
+                ->paginate(30);
+        });
     }
 
     /**
@@ -58,6 +62,22 @@ class OrdersController extends Controller
             'buy_orders' => \App\Http\Resources\OrderResource::collection($buy_orders),
             'sell_orders' => \App\Http\Resources\OrderResource::collection($sell_orders),
         ];
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  string  $slug
+     * @return \Illuminate\Http\Response
+     */
+    public function byAddress(Request $request, $slug)
+    {
+        return \Cache::remember('api_address_orders_' . $slug . '_' . $request->input('page', 1), 5, function() use($slug) {
+            return \App\Order::whereSource($slug)
+                ->with('block', 'market')
+                ->orderBy('tx_index', 'desc')
+                ->paginate(30);
+        });
     }
 
     /**

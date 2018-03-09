@@ -3,14 +3,5 @@
 @section('title', $project->name)
 
 @section('content')
-<h1>{{ $project->name }}</h1>
-<p class="lead">Explainer Text</p>
-<div class="row">
-@foreach($assets as $asset)
-  <div class="col-sm-2">
-    <a href="{{ url(route('assets.show', ['asset' => $asset->name])) }}"><img src="{{ $asset->image_url }}" width="100%" /></a>
-  </div>
-@endforeach
-{!! $assets->links() !!}
-</div>
+<project-assets name="{{ $project->name }}" project="{{ $project->slug }}" filter="{{ $request->input('filter', 'index') }}" order_by="{{ $request->input('order_by', 'volume_total_usd') }}" direction="{{ $request->input('direction', 'desc') }}"></project-assets>
 @endsection

@@ -8,7 +8,7 @@
   <table class="table table-striped table-sm">
     <thead class="text-left">
       <tr>
-        <th>#</th>
+        <th>Block #</th>
         <th>Orders</th>
         <th>Matches</th>
         <th>Mined At</th>

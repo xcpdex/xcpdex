@@ -5,6 +5,7 @@
     input-class="form-control form-control-dark w-100"
     results-property="data"
     results-display="name"
+    @enter="searchUrl"
     @selected="goToUrl">
   </autocomplete>
 </template>
@@ -17,6 +18,7 @@
       data () {
         return {
           apiResults: null,
+          keyword: '',
         }
       },
       components: {
@@ -26,6 +28,10 @@
         goToUrl (obj) {
           this.apiResults = obj
           return window.location.href = 'https://xcpdex.com/asset/' + this.apiResults.selectedObject.slug
+        },
+        searchUrl (keyword) {
+          this.keyword = keyword
+          return window.location.href = 'https://xcpdex.com/search?q=' + this.keyword
         }
       },
     }

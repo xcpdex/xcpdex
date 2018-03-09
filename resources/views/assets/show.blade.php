@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
-@section('title', $asset->long_name ? $asset->long_name : $asset->name)
+@section('title', $asset->display_name)
+
+@section('description', $asset->display_name . ' - Trading Pairs, Market Prices & Volume - ' . $asset->display_description ? strip_tags($asset->display_description) : 'Learn more on XCPDEX.com')
 
 @section('sidebar')
 @if(isset($asset->meta['template']))
@@ -13,8 +15,8 @@
 
   <div class="row">
     <div class="col-md-7">
-      <h1>{{ $asset->long_name ? $asset->long_name : $asset->name }}</h1>
-      <p class="lead">{{ strip_tags($asset->display_description) }}</p>
+      <h1>{{ $asset->display_name }}</h1>
+      <p class="lead">{{ $asset->display_description ? strip_tags($asset->display_description) : 'Trading Pairs, Market Prices & Volume' }}</p>
     </div>
     <div class="col-md-5">
       <div class="table-responsive">
@@ -22,7 +24,7 @@
           <tbody>
             <tr>
               <td><img src="{{ $asset->display_icon_url }}" height="44" /></td>
-              <td title="All-Time">Volume <small>USD</small> <br /><b>${{ number_format($asset->volume_total_usd, 2) }}</b></td>
+              <td title="All-Time">Volume <small>USD</small> <br /><b>${{ $asset->volume_total_usd > 1000 ? number_format($asset->volume_total_usd) : number_format($asset->volume_total_usd, 2) }}</b></td>
               <td title="All-Time">Orders <br /><b>{{ number_format($asset->orders_total) }}</b></td>
               <td title="All-Time">Matches <br /><b>{{ number_format($asset->order_matches_total) }}</b></td>
             </tr>
@@ -39,6 +41,28 @@
     </div>
   </div>
 
-  <asset-markets asset="{{ $asset->name }}" filter="{{ $request->input('filter', 'index') }}" order_by="{{ $request->input('order_by', 'quote_volume_usd') }}" direction="{{ $request->input('direction', 'desc') }}"></asset-markets>
+  @if($asset->name === 'GEMZ')
+  <div class="alert alert-warning" role="alert">
+    <strong>Alert:</strong> GetGems Update October 27, 2016. (<a href="https://medium.com/@GetGems/getgems-update-october-27-2016-e8e3d28d38b9" target="_blank">Source</a>)
+  </div>
+  @elseif($asset->name === 'SJCX')
+  <div class="alert alert-danger" role="alert">
+    <strong>Alert:</strong> The Storj project migrated to an ERC-20 token. (<a href="https://blog.storj.io/post/158740607128/migration-from-counterparty-to-ethereum" target="_blank">Source 1</a>, <a href="https://docs.storj.io/docs/migrate-tokens-from-sjcx-to-storj" target="_blank">Source 2</a>)
+  </div>
+  @elseif($asset->name === 'WILLCOIN' || isset($asset->meta['template']) && $asset->meta['template'] === 'force-of-will')
+  <div class="alert alert-warning" role="alert">
+    <strong>Alert:</strong> Force of Will (FoW) has postponed their use of Counterparty. (<a href="https://medium.com/book-of-orbs/project-orb-update-apr-13th-4d6351420743" target="_blank">Source</a>)
+  </div>
+  @elseif(isset($asset->meta['template']) && $asset->meta['template'] === 'bitgirls')
+  <div class="alert alert-warning" role="alert">
+    <strong>Alert:</strong> The BitGirls project ended on March 31, 2017. (<a href="http://bitgirls.io/en/" target="_blank">Source</a>)
+  </div>
+  @endif
+
+  @if($asset->image_url)
+    <img src="{{ $asset->image_url }}" alt="{{ $asset->name }}" width="100%" height="auto" class="mb-3 d-block d-sm-none" />
+  @endif
+
+  <asset-markets asset="{{ $asset->name }}" filter="{{ $request->input('filter', 'index') }}" order_by="{{ $request->input('order_by', 'quote_volume_usd_month') }}" direction="{{ $request->input('direction', 'desc') }}"></asset-markets>
 
 @endsection

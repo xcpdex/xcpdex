@@ -2,6 +2,8 @@
 
 @section('title', 'Block #' . $block->block_index)
 
+@section('description', 'Bitcoin Block #' . $block->block_index . ' - Counterparty Dex Transactions')
+
 @section('content')
 <ul class="pagination mt-1 float-right">
 @if($block->block_index !== 278319)

@@ -50,7 +50,7 @@
         }
 
         .title {
-            font-size: 84px;
+            font-size: 68px;
             font-weight: bold;
         }
 
@@ -66,8 +66,8 @@
                 XCP DEX
             </div>
             <div class="links">
-                <a href="https://twitter.com/xcpdex" class="btn btn-lg btn-primary" target="_blank"><i class="fa fa-twitter"></i> Follow @xcpdex</a>
-                <a href="https://t.me/xcpdex" class="btn btn-lg btn-primary ml-1" target="_blank"><i class="fa fa-telegram"></i> Join Telegram</a>
+                <a href="https://twitter.com/xcpdex" class="btn btn-primary" target="_blank"><i class="fa fa-twitter"></i> Follow @xcpdex</a>
+                <a href="https://t.me/xcpdex" class="btn btn-primary ml-1" target="_blank"><i class="fa fa-telegram"></i> Join Telegram</a>
             </div>
         </div>
     </div>

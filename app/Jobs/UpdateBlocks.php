@@ -57,7 +57,7 @@ class UpdateBlocks implements ShouldQueue
 
     private function updateOrCreateBlock($data)
     {
-        $mined_at = $this->getTimestamp($data['block_time']);
+        $mined_at = \Carbon\Carbon::createFromTimestamp($data['block_time'], 'America/New_York');
 
         return \App\Block::updateOrCreate([
             'block_hash' => $data['block_hash'],
@@ -68,11 +68,6 @@ class UpdateBlocks implements ShouldQueue
             'previous_block_hash' => $data['previous_block_hash'],
             'mined_at' => $mined_at,
         ]);
-    }
-
-    private function getTimestamp($timestamp)
-    {
-        return \Carbon\Carbon::createFromTimestamp($timestamp, 'America/New_York');
     }
 
     private function processMessages($messages)
@@ -122,7 +117,7 @@ class UpdateBlocks implements ShouldQueue
         $exchange_rate = $this->getExchangeRate($type, $market->baseAsset->divisible, $data[$base.'_quantity'], $data[$quote.'_quantity']);
         $exchange_rate_usd = $this->getExchangeRateUsd($market->quoteAsset, $exchange_rate, $data['block_index']);
 
-        \App\Order::updateOrCreate([
+        $order = \App\Order::updateOrCreate([
             'type' => $type,
             'source' => $data['source'],
             'market_id' => $market->id,
@@ -141,6 +136,8 @@ class UpdateBlocks implements ShouldQueue
             'exchange_rate' => $exchange_rate,
             'exchange_rate_usd' => $exchange_rate_usd,
         ]);
+
+        \App\Jobs\UpdateMarketSummary::dispatch($order->market);
     }
 
     private function updateOrder($message)
@@ -166,6 +163,8 @@ class UpdateBlocks implements ShouldQueue
                 'status' => $data['status'],
             ]);
         }
+
+        \App\Jobs\UpdateMarketSummary::dispatch($order->market);
     }
 
     private function createOrderMatch($message)
@@ -194,7 +193,7 @@ class UpdateBlocks implements ShouldQueue
             'exchange_rate_usd' => $order->exchange_rate_usd,
         ]);
 
-        // \App\Jobs\UpdateMarketSummary::dispatch($order_match->market);
+        \App\Jobs\UpdateMarketSummary::dispatch($order_match->market);
     }
 
     private function updateOrderMatch($message)
@@ -213,7 +212,7 @@ class UpdateBlocks implements ShouldQueue
             'status' => $data['status'],
         ]);
 
-        // \App\Jobs\UpdateMarketSummary::dispatch($order_match->market);
+        \App\Jobs\UpdateMarketSummary::dispatch($order_match->market);
     }
 
     private function getData($message)

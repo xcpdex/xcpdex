@@ -50,7 +50,14 @@ class UpdateUsdPrices implements ShouldQueue
 
             $last_match_possibly_long_ago = $usd_volume_market->orderMatches()
                 ->where('block_index', '<', $order->block_index)
+                ->where('block_index', '>', $order->block_index - 4500)
                 ->orderBy('block_index', 'desc')
+                ->first();
+
+            $next_match_possibly_a_month = $usd_volume_market->orderMatches()
+                ->where('block_index', '>', $order->block_index)
+                ->where('block_index', '<', $order->block_index + 4500)
+                ->orderBy('block_index', 'asc')
                 ->first();
 
             if($exact_match_data)
@@ -73,6 +80,19 @@ class UpdateUsdPrices implements ShouldQueue
             {
                 $exchange_rate_usd = sprintf("%.8f", (float)$order->exchange_rate * $last_match_possibly_long_ago->exchange_rate_usd);
             }
+            elseif($next_match_possibly_a_month)
+            {
+                $exchange_rate_usd = sprintf("%.8f", (float)$order->exchange_rate * $next_match_possibly_a_month->exchange_rate_usd);
+            }
+            elseif($order->market->quoteAsset->name === 'XFCCOIN')
+            {
+                $first_match_found = $usd_volume_market->orderMatches()
+                    ->where('block_index', '>', $order->block_index)
+                    ->orderBy('block_index', 'asc')
+                    ->first();
+
+                $exchange_rate_usd = sprintf("%.8f", (float)$order->exchange_rate * $first_match_found->exchange_rate_usd);
+            }
             else
             {
                 $exchange_rate_usd = $order->exchange_rate_usd;
@@ -84,11 +104,7 @@ class UpdateUsdPrices implements ShouldQueue
             {
                 foreach($order->orderMatches as $order_match)
                 {
-                    $quote_quantity = $order_match->quote_quantity;
-
-                    if($order->market->quoteAsset->divisible) $quote_quantity = fromSatoshi($quote_quantity);
-
-                    $quote_quantity_usd = sprintf("%.8f", (float)$quote_quantity * $exchange_rate_usd);
+                    $quote_quantity_usd = sprintf("%.8f", (float)$order_match->base_quantity_normalized * $exchange_rate_usd);
 
                     $order_match->update([
                         'quote_quantity_usd' => $quote_quantity_usd,

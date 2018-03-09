@@ -47,9 +47,7 @@ class AddressesController extends Controller
      */
     public function show($slug)
     {
-        $orders = \App\Order::whereSource($slug)->with('block', 'market')->orderBy('tx_index', 'desc')->get();
-
-        return view('addresses.show', compact('slug', 'orders'));
+        return view('addresses.show', compact('slug'));
     }
 
     /**

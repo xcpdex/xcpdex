@@ -15,10 +15,17 @@ window.Vue = require('vue');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+Vue.component('orders', require('./components/Orders.vue'));
 Vue.component('order-book', require('./components/OrderBook.vue'));
 Vue.component('order-matches', require('./components/OrderMatches.vue'));
+Vue.component('markets', require('./components/Markets.vue'));
+Vue.component('matches', require('./components/Matches.vue'));
+Vue.component('assets', require('./components/Assets.vue'));
 Vue.component('asset-markets', require('./components/AssetMarkets.vue'));
 Vue.component('auto-suggest', require('./components/AutoSuggest.vue'));
+Vue.component('source-table', require('./components/SourceTable.vue'));
+Vue.component('address-orders', require('./components/AddressOrders.vue'));
+Vue.component('project-assets', require('./components/ProjectAssets.vue'));
 
 const app = new Vue({
     el: '#app'

@@ -3,14 +3,9 @@
 
 XCP DEX is a block explorer specific to the Counterparty DEX data.
 
-## Initial Setup
+## Development
 
-db:seed
-- block:height
-- fetch:assets import
-- fetch:assets update
-- update:assets
-- update:blocks
+At this time, XCP DEX is open source, but not in a polished, well-documented state. There is a lot of unused and/or unrefactored code with inefficient calls.
 
 ## Security Vulnerabilities
 

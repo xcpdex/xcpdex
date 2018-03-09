@@ -44,10 +44,20 @@ class BlockHeightCommand extends Command
     {
         if($this->isNewBlockHeight())
         {
+            $markets = \App\Market::whereHas('orders', function($order) {
+                $order->where('expire_index', '=', \Cache::get('block_height'));
+            })->get();
+
+            foreach($markets as $market)
+            {
+                $market->update(['open_orders_total' => $market->openOrders->count()]);
+            }
+
+            $this->call('fetch:assets', ['method' => 'update']);
+            sleep(180);
             $this->call('update:histories');
-            sleep(30);
+            sleep(20);
             $this->call('update:blocks');
-            sleep(30);
             // $this->call('update:charts');
         }
     }

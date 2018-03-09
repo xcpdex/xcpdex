@@ -12,7 +12,7 @@ class Market extends Model
      * @var array
      */
     protected $fillable = [
-         'base_asset_id', 'quote_asset_id', 'name', 'slug', 'base_volume', 'last_price_usd', 'quote_volume', 'quote_volume_usd', 'quote_market_cap', 'quote_market_cap_usd', 'open_orders_total', 'orders_total', 'order_matches_total', 'last_traded_at'
+         'base_asset_id', 'quote_asset_id', 'name', 'slug', 'base_volume', 'last_price_usd', 'quote_volume', 'quote_volume_usd', 'quote_volume_usd_month', 'quote_market_cap', 'quote_market_cap_usd', 'open_orders_total', 'orders_total', 'order_matches_total', 'last_traded_at'
     ];
 
     /**

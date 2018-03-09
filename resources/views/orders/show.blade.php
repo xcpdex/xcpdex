@@ -81,8 +81,8 @@
     <tbody>
       @foreach($order->orderMatches()->orderBy('tx_index', 'desc')->get() as $match)
       <tr>
-        <td><a href="{{ url(route('orders.show', ['order' => $match->orderMatch->tx_hash])) }}">{{ $match->orderMatch->block->block_time }}</a></td>
-        <td>{{ $match->orderMatch->type }}</td>
+        <td><a href="{{ url(route('orders.show', ['order' => $match->orderMatch->tx_hash])) }}">{{ $match->orderMatch->block->mined_at }}</a></td>
+        <td class="{{ $match->orderMatch->type === 'buy' ? 'text-success' : 'text-danger' }}">{{ $match->orderMatch->type }}</td>
         <td>{{ $match->status }}</td>
         <td class="text-right">{{ $match->orderMatch->exchange_rate }}</td>
         <td class="text-right">{{ $match->base_quantity_normalized }}</td>
@@ -93,8 +93,8 @@
       @if($order->orderMatchesReverse->count())
       @foreach($order->orderMatchesReverse()->orderBy('tx_index', 'desc')->get() as $match)
       <tr>
-        <td><a href="{{ url(route('orders.show', ['order' => $match->order->tx_hash])) }}">{{ $match->order->block->block_time }}</a></td>
-        <td>{{ $match->orderMatch->type }}</td>
+        <td><a href="{{ url(route('orders.show', ['order' => $match->order->tx_hash])) }}">{{ $match->order->block->mined_at }}</a></td>
+        <td class="{{ $match->orderMatch->type === 'buy' ? 'text-success' : 'text-danger' }}">{{ $match->orderMatch->type }}</td>
         <td>{{ $match->status }}</td>
         <td class="text-right">{{ $match->order->exchange_rate }}</td>
         <td class="text-right">{{ $match->base_quantity_normalized }}</td>

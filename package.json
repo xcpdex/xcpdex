@@ -20,6 +20,7 @@
         "vue": "^2.5.13"
     },
     "dependencies": {
+        "es6-promise": "^4.2.4",
         "font-awesome": "^4.7.0",
         "numeral": "^2.0.6",
         "vue-infinite-loading": "^2.2.3",

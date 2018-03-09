@@ -13,9 +13,7 @@ class OrdersController extends Controller
      */
     public function index()
     {
-        $orders = \App\Order::has('block')->orderBy('tx_index', 'desc')->paginate(100);
-
-        return view('orders.index', compact('orders'));
+        return view('orders.index');
     }
 
     /**

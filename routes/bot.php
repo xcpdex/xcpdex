@@ -19,7 +19,7 @@
 |
 | Example: http://domain.com/bot/set-webhook
 */
-// Route::get('/bot/set-webhook', 'BotController@setWebhook')->name('bot-set-webhook');
+// Route::get('/bot/' . env('TELEGRAM_WEB_HOOK') . '/set-webhook', 'BotController@setWebhook')->name('bot-set-webhook');
 
 /*
 |--------------------------------------------------------------------------
@@ -45,4 +45,4 @@
 | THEN SET THAT WEBHOOK WITH TELEGRAM.
 | SO YOU CAN BE SURE THE UPDATES ARE COMING FROM TELEGRAM ONLY.
 */
-Route::post('/bot/webhook', 'BotController@webhookHandler')->name('bot-webhook');
+Route::post('/bot/' . env('TELEGRAM_WEB_HOOK') . '/webhook', 'BotController@webhookHandler')->name('bot-webhook');

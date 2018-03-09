@@ -111,7 +111,7 @@ class Order extends Model
      */
     public function scopeOpen($query)
     {
-        $block_height = \Cache::get('block_height', 0);
+        $block_height = \App\Block::orderBy('block_index', 'desc')->first()->block_index;
 
         return $query->whereStatus('open')->where('expire_index', '>', $block_height);
     }

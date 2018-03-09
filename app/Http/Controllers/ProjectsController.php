@@ -13,9 +13,9 @@ class ProjectsController extends Controller
      */
     public function index()
     {
-        return \App\Order::select('source')->with('block', 'market')->groupBy('source')->paginate(100);
+        $projects = \App\Project::with('assets')->get();
 
-        return view('addresses.index', compact('addresses'));
+        return view('projects.index', compact('projects'));
     }
 
     /**
@@ -49,9 +49,7 @@ class ProjectsController extends Controller
     {
         $project = \App\Project::whereSlug($slug)->first();
 
-        $assets = $project->assets()->paginate(50);
-
-        return view('projects.show', compact('project', 'assets'));
+        return view('projects.show', compact('project', 'request'));
     }
 
     /**

@@ -37,7 +37,7 @@ class UpdateMarketSummariesCommand extends Command
      */
     public function handle()
     {
-        $markets = \App\Market::get();
+        $markets = \App\Market::has('orderMatches')->get();
 
         foreach($markets as $market)
         {

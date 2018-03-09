@@ -22,11 +22,13 @@ class Kernel extends ConsoleKernel
         Commands\UpdateAgeOfRustCommand::class,
         Commands\UpdateAssetsCommand::class,
         Commands\UpdateBlocksCommand::class,
+        Commands\UpdateBookOfOrbsCommand::class,
         Commands\UpdateChartsCommand::class,
         Commands\UpdateEnhancedAssetsCommand::class,
         Commands\UpdateHistoriesCommand::class,
         Commands\UpdateMarketsCommand::class,
         Commands\UpdateMarketSummariesCommand::class,
+        Commands\UpdateMonthlyVolumesCommand::class,
         Commands\UpdatePepeCashHistoryCommand::class,
         Commands\UpdatePenisiumCommand::class,
         Commands\UpdatePricesCommand::class,
@@ -43,9 +45,12 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('block:height')->everyMinute();
-        // $schedule->command('update:rares')->daily();
-        // $schedule->command('update:spells')->daily();
+        $schedule->command('block:height')->everyMinute();
+        $schedule->command('update:rares')->daily();
+        $schedule->command('update:prices:usd')->daily();
+        $schedule->command('update:assets')->daily();
+        $schedule->command('update:enhanced')->daily();
+        $schedule->command('update:volumes:monthly')->daily();
     }
 
     /**
