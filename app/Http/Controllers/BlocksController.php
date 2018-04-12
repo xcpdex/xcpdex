@@ -11,11 +11,11 @@ class BlocksController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $blocks = \App\Block::withCount('orders', 'orderMatches')->orderBy('block_index', 'desc')->paginate(100);
 
-        return view('blocks.index', compact('blocks'));
+        return view('blocks.index', compact('blocks', 'request'));
     }
 
     /**

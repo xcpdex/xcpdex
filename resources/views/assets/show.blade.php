@@ -2,7 +2,7 @@
 
 @section('title', $asset->display_name)
 
-@section('description', $asset->display_name . ' - Trading Pairs, Market Prices & Volume - ' . $asset->display_description ? strip_tags($asset->display_description) : 'Learn more on XCPDEX.com')
+@section('description', $asset->display_name . ' - Trading Pairs, Market Prices & Dex Volume - ' . $asset->display_description ? strip_tags($asset->display_description) : 'Learn more on XCPDEX.com')
 
 @section('sidebar')
 @if(isset($asset->meta['template']))
@@ -16,7 +16,7 @@
   <div class="row">
     <div class="col-md-7">
       <h1>{{ $asset->display_name }}</h1>
-      <p class="lead">{{ $asset->display_description ? strip_tags($asset->display_description) : 'Trading Pairs, Market Prices & Volume' }}</p>
+      <p class="lead">{{ $asset->display_description ? strip_tags($asset->display_description) : 'Trading Pairs, Market Price & Dex Volume.' }}</p>
     </div>
     <div class="col-md-5">
       <div class="table-responsive">

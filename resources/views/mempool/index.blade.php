@@ -21,7 +21,7 @@
     <tbody>
     @if ( count($txs) )
         @foreach( $txs as $tx )
-            @if($tx['category'] === 'orders')
+            @if($tx['category'] === 'orders' && isset(json_decode($tx['bindings'])->source))
             <tr>
                 <td>{{ str_replace('after', 'ago', \Carbon\Carbon::now()->diffForHumans(\Carbon\Carbon::createFromTimestamp($tx['timestamp'], 'America/New_York'))) }}</td>
                 <td><a href="{{ url(route('addresses.show', ['slug' => json_decode($tx['bindings'])->source])) }}">{{ json_decode($tx['bindings'])->source }}</a></td>

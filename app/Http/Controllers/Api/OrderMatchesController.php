@@ -16,7 +16,7 @@ class OrderMatchesController extends Controller
     {
         return \Cache::remember('api_matches_' . $request->input('page', 1), 5, function() {
             return \App\OrderMatch::has('block')
-                ->with('block', 'market')
+                ->with('block', 'market', 'orderMatch')
                 ->orderBy('tx_index', 'desc')
                 ->paginate(30);
         });

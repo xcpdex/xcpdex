@@ -71,6 +71,7 @@ class MarketsController extends Controller
                     ->where('open_orders_total', '>', 0)
                     ->where('order_matches_total', '>', 0)
                     ->orderBy($order_by, $direction)
+                    ->orderBy('quote_volume_usd', $direction)
                     ->orderBy('last_traded_at', $direction)
                     ->paginate(30);
             }
@@ -78,6 +79,7 @@ class MarketsController extends Controller
             {
                 return \App\Market::where('base_asset_id', '=', $asset->id)
                     ->orderBy($order_by, $direction)
+                    ->orderBy('quote_volume_usd', $direction)
                     ->orderBy('last_traded_at', $direction)
                     ->paginate(30);
             }
@@ -85,6 +87,7 @@ class MarketsController extends Controller
             {
                 return \App\Market::where('quote_asset_id', '=', $asset->id)
                     ->orderBy($order_by, $direction)
+                    ->orderBy('quote_volume_usd', $direction)
                     ->orderBy('last_traded_at', $direction)
                     ->paginate(30);
             }
@@ -93,6 +96,7 @@ class MarketsController extends Controller
                 return \App\Market::where('base_asset_id', '=', $asset->id)
                     ->orWhere('quote_asset_id', '=', $asset->id)
                     ->orderBy($order_by, $direction)
+                    ->orderBy('quote_volume_usd', $direction)
                     ->orderBy('last_traded_at', $direction)
                     ->paginate(30);
             }

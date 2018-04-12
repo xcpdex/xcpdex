@@ -18,14 +18,14 @@
     </thead>
     <tbody>
       <tr v-for="match in matches">
-        <td><a :href="'https://xcpdex.com/tx/' + match.tx_hash">{{ match.block.mined_at }}</a></td>
+        <td><a :href="'https://xcpdex.com/tx/' + match.order_match.tx_hash">{{ match.block.mined_at }}</a></td>
         <td><a :href="'https://xcpdex.com/market/' +  match.market.slug">{{ match.market.name }}</a></td>
         <td :class="match.order.type == 'buy' ? 'text-danger' : 'text-success'">{{ match.order.type == 'buy' ? 'sell' : 'buy' }}</td>
         <td>{{ match.status }}</td>
         <td class="text-right">{{ match.exchange_rate }}</td>
         <td class="text-right">{{ match.base_quantity_normalized }}</td>
         <td class="text-right">{{ match.quote_quantity_normalized }}</td>
-        <td><a :href="'https://xcpdex.com/address/' + match.source">{{ match.source }}</a></td>
+        <td><a :href="'https://xcpdex.com/address/' + match.order_match.source">{{ match.order_match.source }}</a></td>
         <td><a :href="'https://xcpdex.com/address/' + match.order.source">{{ match.order.source }}</a></td>
       </tr>
       <tr v-if="matches.length == 0">

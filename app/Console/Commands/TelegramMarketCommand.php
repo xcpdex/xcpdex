@@ -12,6 +12,11 @@ class TelegramMarketCommand extends Command
     protected $name = 'market';
 
     /**
+     * @var array Command Aliases
+     */
+    protected $aliases = ['m'];
+
+    /**
      * @var string Command Description
      */
     protected $description = 'Market Data';
@@ -22,7 +27,17 @@ class TelegramMarketCommand extends Command
     public function handle($arguments)
     {
         $update = $this->getUpdate();
-        $market = trim(str_replace('/market', '', $update->getMessage()->getText()));
+        $market = explode(' ', $update->getMessage()->getText());
+
+        if(isset($market[1]))
+        {
+            $market = $market[1];
+        }
+        else
+        {
+            $this->replyWithMessage(['text' => 'Error: No Market Provided']);
+            return true;
+        }
 
         try
         {

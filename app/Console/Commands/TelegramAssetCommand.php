@@ -12,6 +12,11 @@ class TelegramAssetCommand extends Command
     protected $name = 'asset';
 
     /**
+     * @var array Command Aliases
+     */
+    protected $aliases = ['a', 't', 'token', 'c', 'card'];
+
+    /**
      * @var string Command Description
      */
     protected $description = 'Asset Data';
@@ -22,7 +27,17 @@ class TelegramAssetCommand extends Command
     public function handle($arguments)
     {
         $update = $this->getUpdate();
-        $asset = trim(str_replace('/asset', '', $update->getMessage()->getText()));
+        $asset = explode(' ', $update->getMessage()->getText());
+
+        if(isset($asset[1]))
+        {
+            $asset = $asset[1];
+        }
+        else
+        {
+            $this->replyWithMessage(['text' => 'Error: No Asset Provided']);
+            return true;
+        }
 
         try
         {
@@ -31,10 +46,8 @@ class TelegramAssetCommand extends Command
                 ->firstOrFail();
 
             $markets  = \App\Market::where('base_asset_id', '=', $asset->id)
-                ->where('open_orders_total', '>', 0)
                 ->where('order_matches_total', '>', 0)
                 ->orWhere('quote_asset_id', '=', $asset->id)
-                ->where('open_orders_total', '>', 0)
                 ->where('order_matches_total', '>', 0)
                 ->orderBy('quote_volume_usd_month', 'desc')
                 ->orderBy('last_traded_at', 'desc')

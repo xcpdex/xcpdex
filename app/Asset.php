@@ -12,7 +12,7 @@ class Asset extends Model
      * @var array
      */
     protected $fillable = [
-         'name', 'long_name', 'description', 'icon_url', 'image_url', 'issuance', 'divisible', 'locked', 'volume_total_usd', 'orders_total', 'order_matches_total', 'enhanced', 'processed', 'meta->description', 'meta->template', 'meta->asset_url', 'meta->image_url', 'meta->icon_url', 'meta->series', 'meta->number', 'meta->burned',
+         'name', 'long_name', 'description', 'icon_url', 'image_url', 'issuance', 'divisible', 'locked', 'volume_total_usd', 'orders_total', 'order_matches_total', 'enhanced', 'processed', 'meta->description', 'meta->template', 'meta->asset_url', 'meta->image_url', 'meta->icon_url', 'meta->name', 'meta->team', 'meta->series', 'meta->number', 'meta->burned',
     ];
 
     /**

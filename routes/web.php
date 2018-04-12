@@ -11,15 +11,9 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Auth::routes();
 
-Route::middleware(['auth'])->group(function () {
-
-Route::get('/home', [
+Route::get('/', [
     'as' => 'home',
     'uses' => 'HomeController@index',
 ]);
@@ -121,6 +115,4 @@ Route::get('/tx/{tx_hash}', [
 
 Route::get('/{asset}', function ($asset) {
     return redirect(route('assets.show', ['asset' => $asset]));
-});
-
 });

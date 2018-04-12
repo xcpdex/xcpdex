@@ -20,10 +20,10 @@
 <div id="app">
 
     <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
-      <a class="navbar-brand col-5 col-sm-3 col-md-3 col-lg-2 mr-0" href="{{ url(route('home')) }}">
+      <a class="navbar-brand col-6 col-sm-4 col-md-3 col-lg-2 mr-0" href="{{ url(route('home')) }}">
         <img src="{{ asset('/img/logo.png') }}" alt="{{ env('APP_NAME', 'XCP DEX') }}" class="mt-2 mr-1" /> {{ env('APP_NAME', 'XCP DEX') }}
       </a>
-      <div class="col-7 col-sm-9 col-md-4 col-lg-3 p-0">
+      <div class="col-6 col-sm-8 col-md-4 col-lg-3 p-0">
         <auto-suggest></auto-suggest>
       </div>
       <div class="col-md-5 col-lg-7">

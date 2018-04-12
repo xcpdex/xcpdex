@@ -101,7 +101,10 @@ return [
     'commands' => [
         Telegram\Bot\Commands\HelpCommand::class,
         App\Console\Commands\TelegramStartCommand::class,
+        App\Console\Commands\TelegramFeeCommand::class,
+        App\Console\Commands\TelegramPriceCommand::class,
         App\Console\Commands\TelegramAssetCommand::class,
+        App\Console\Commands\TelegramImageCommand::class,
         App\Console\Commands\TelegramMarketCommand::class,
     ],
 ];

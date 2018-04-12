@@ -2,6 +2,12 @@
 
 @section('title', 'Blocks')
 
+@section('header')
+@if($request->input('page', 1) !== 1)
+<META NAME="ROBOTS" CONTENT="NOINDEX, FOLLOW">
+@endif
+@endsection
+
 @section('content')
 <h1 class="mb-3">Blocks <small class="lead">{{ $blocks->total() }} Found</small></h1>
 <div class="table-responsive">

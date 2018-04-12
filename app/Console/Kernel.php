@@ -25,6 +25,7 @@ class Kernel extends ConsoleKernel
         Commands\UpdateBookOfOrbsCommand::class,
         Commands\UpdateChartsCommand::class,
         Commands\UpdateEnhancedAssetsCommand::class,
+        Commands\UpdateFootballCoinCommand::class,
         Commands\UpdateHistoriesCommand::class,
         Commands\UpdateMarketsCommand::class,
         Commands\UpdateMarketSummariesCommand::class,
@@ -46,11 +47,12 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('block:height')->everyMinute();
-        $schedule->command('update:rares')->daily();
-        $schedule->command('update:prices:usd')->daily();
-        $schedule->command('update:assets')->daily();
-        $schedule->command('update:enhanced')->daily();
-        $schedule->command('update:volumes:monthly')->daily();
+        $schedule->command('update:rares')->dailyAt('1:00');
+        $schedule->command('update:prices:usd')->dailyAt('2:00');
+        $schedule->command('update:assets')->dailyAt('3:00');
+        $schedule->command('update:enhanced')->dailyAt('4:00');
+        $schedule->command('update:markets:summaries')->dailyAt('5:00');
+        $schedule->command('update:volumes:monthly')->dailyAt('6:00');
     }
 
     /**

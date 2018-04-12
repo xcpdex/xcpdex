@@ -57,7 +57,11 @@ class UpdateBlocks implements ShouldQueue
 
     private function updateOrCreateBlock($data)
     {
-        $mined_at = \Carbon\Carbon::createFromTimestamp($data['block_time'], 'America/New_York');
+        try {
+            $mined_at = \Carbon\Carbon::createFromTimestamp($data['block_time'], 'America/New_York');
+        } catch(\Exception $e) {
+            $mined_at = \Carbon\Carbon::createFromTimestamp($data['block_time'], 'America/New_York')->addHour();
+        }
 
         return \App\Block::updateOrCreate([
             'block_hash' => $data['block_hash'],
