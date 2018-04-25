@@ -24,12 +24,12 @@
     <tbody>
       @foreach($results as $asset)
       <tr>
-        <td><a href="{{ url(route('assets.show', ['asset' => $asset->name])) }}"><img src="{{ $asset->display_icon_url }}" height="22" /> {{ $asset->long_name ? $asset->long_name : $asset->name }}</a></td>
-        <td class="text-right"><a href="{{ url(route('assets.show', ['asset' => $asset->name])) }}">${{ number_format($asset->volume_total_usd) }}</a></td>
-        <td class="text-right"><a href="{{ url(route('assets.show', ['asset' => $asset->name])) }}">{{ isset($asset->meta['burned']) ? number_format($asset->issuance_normalized - $asset->meta['burned']) : number_format($asset->issuance_normalized) }}</a></td>
-        <td class="text-right"><a href="{{ url(route('assets.show', ['asset' => $asset->name])) }}">{{ $asset->base_markets_count + $asset->quote_markets_count }}</a></td>
-        <td class="text-right"><a href="{{ url(route('assets.show', ['asset' => $asset->name])) }}">{{ number_format($asset->orders_total) }}</a></td>
-        <td class="text-right"><a href="{{ url(route('assets.show', ['asset' => $asset->name])) }}">{{ number_format($asset->order_matches_total) }}</a></td>
+        <td><a href="{{ url(route('assets.show', ['asset' => $asset->slug])) }}"><img src="{{ $asset->display_icon_url }}" height="22" /> {{ $asset->long_name ? $asset->long_name : $asset->name }}</a></td>
+        <td class="text-right"><a href="{{ url(route('assets.show', ['asset' => $asset->slug])) }}">${{ number_format($asset->volume_total_usd) }}</a></td>
+        <td class="text-right"><a href="{{ url(route('assets.show', ['asset' => $asset->slug])) }}">{{ isset($asset->meta['burned']) ? number_format($asset->issuance_normalized - $asset->meta['burned']) : number_format($asset->issuance_normalized) }}</a></td>
+        <td class="text-right"><a href="{{ url(route('assets.show', ['asset' => $asset->slug])) }}">{{ $asset->base_markets_count + $asset->quote_markets_count }}</a></td>
+        <td class="text-right"><a href="{{ url(route('assets.show', ['asset' => $asset->slug])) }}">{{ number_format($asset->orders_total) }}</a></td>
+        <td class="text-right"><a href="{{ url(route('assets.show', ['asset' => $asset->slug])) }}">{{ number_format($asset->order_matches_total) }}</a></td>
       </tr>
       @endforeach
     </tbody>

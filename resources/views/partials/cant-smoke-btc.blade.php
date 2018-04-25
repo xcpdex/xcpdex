@@ -6,7 +6,7 @@
 <ul class="nav flex-column">
   <li class="nav-item">
     <a href="{{ url(route('projects.show', ['project' => $project->slug])) }}" class="nav-link">
-      {{ $asset->display_name }}
+      {{ $asset->name }}
     </a>
   </li>
 </ul>

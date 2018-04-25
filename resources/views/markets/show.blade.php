@@ -153,7 +153,7 @@ $.getJSON('https://xcpdex.com/api/charts/{{ $market->slug }}', function (data) {
 
   <div class="row">
     <div class="col-md-7">
-      <h1>{{ $market->baseAsset->long_name ? $market->baseAsset->long_name : $market->baseAsset->name }} <small class="lead d-none d-sm-inline">(<a href="{{ url(route('assets.show', ['asset' => $market->baseAsset->name])) }}">{{ $market->baseAsset->name }}</a>/<a href="{{ url(route('assets.show', ['asset' => $market->quoteAsset->name])) }}">{{ $market->quoteAsset->name }}</a>)</small></h1>
+      <h1>{{ $market->baseAsset->long_name ? $market->baseAsset->long_name : $market->baseAsset->name }} <small class="lead d-none d-sm-inline">(<a href="{{ url(route('assets.show', ['asset' => $market->baseAsset->slug])) }}">{{ $market->baseAsset->long_name ? $market->baseAsset->long_name : $market->baseAsset->name }}</a>/<a href="{{ url(route('assets.show', ['asset' => $market->quoteAsset->slug])) }}">{{ $market->quoteAsset->long_name ? $market->quoteAsset->long_name : $market->quoteAsset->name }}</a>)</small></h1>
       <p class="lead"><span class="d-none d-sm-inline">{{ $market->baseAsset->long_name ? $market->baseAsset->long_name : $market->baseAsset->name }}</span> Price Chart, Order Book &amp; Match History.</p>
     </div>
     <div class="col-md-5">

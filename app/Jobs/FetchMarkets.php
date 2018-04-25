@@ -55,8 +55,8 @@ class FetchMarkets implements ShouldQueue
                     'base_asset_id'  => $base_asset->id,
                     'quote_asset_id' => $quote_asset->id,
                 ],[
-                    'name' => "{$base_asset->name}/{$quote_asset->name}",
-                    'slug' => "{$base_asset->name}_{$quote_asset->name}",
+                    'name' => "{$base_asset->display_name}/{$quote_asset->display_name}",
+                    'slug' => "{$base_asset->display_name}_{$quote_asset->display_name}",
                 ]);
 
                 if($market->wasRecentlyCreated)

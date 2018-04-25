@@ -54,7 +54,7 @@ class TelegramAssetCommand extends Command
                 ->take(5)
                 ->get();
 
-            $link_to = url(route('assets.show', ['asset' => $asset->name]));
+            $link_to = url(route('assets.show', ['asset' => $asset->slug]));
 
             if(count($markets))
             {

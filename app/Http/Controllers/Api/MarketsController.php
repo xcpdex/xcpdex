@@ -48,7 +48,7 @@ class MarketsController extends Controller
 
     public function show(Request $request, $slug)
     {
-        $asset = \App\Asset::whereName($slug)->firstOrFail();
+        $asset = \App\Asset::whereSlug($slug)->firstOrFail();
 
         $request->validate([
             'filter' => 'sometimes|in:index,active,base,quote',

@@ -118,7 +118,7 @@ class UpdateBlocks implements ShouldQueue
         $base = 'buy' === $type ? 'get' : 'give';
         $quote = 'sell' === $type ? 'get' : 'give';
 
-        $exchange_rate = $this->getExchangeRate($type, $market->baseAsset->divisible, $data[$base.'_quantity'], $data[$quote.'_quantity']);
+        $exchange_rate = $this->getExchangeRate($type, $market->baseAsset, $data[$base.'_quantity'], $market->quoteAsset, $data[$quote.'_quantity']);
         $exchange_rate_usd = $this->getExchangeRateUsd($market->quoteAsset, $exchange_rate, $data['block_index']);
 
         $order = \App\Order::updateOrCreate([
@@ -234,12 +234,12 @@ class UpdateBlocks implements ShouldQueue
             'base_asset_id' => $base_asset->id,
             'quote_asset_id' => $quote_asset->id,
         ],[
-            'name' => "{$base_asset->name}/{$quote_asset->name}",
-            'slug' => "{$base_asset->name}_{$quote_asset->name}",
+            'name' => "{$base_asset->display_name}/{$quote_asset->display_name}",
+            'slug' => "{$base_asset->display_name}_{$quote_asset->display_name}",
         ]);
     }
 
-    private function getExchangeRate($type, $base_asset_divisible, $base_quantity, $quote_quantity)
+    private function getExchangeRate($type, $base_asset, $base_quantity, $quote_asset, $quote_quantity)
     {
         if($base_quantity == 0) return 0;
 
@@ -247,7 +247,7 @@ class UpdateBlocks implements ShouldQueue
 
         $method = 'buy' == $type ? PHP_ROUND_HALF_DOWN : PHP_ROUND_HALF_UP;
 
-        if(! $base_asset_divisible) $exchange_rate = fromSatoshi($exchange_rate);
+        if(! $base_asset->divisible && $quote_asset->divisible) $exchange_rate = fromSatoshi($exchange_rate);
 
         return round($exchange_rate, 8, $method);
     }

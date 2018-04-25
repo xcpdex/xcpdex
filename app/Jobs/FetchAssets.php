@@ -64,7 +64,7 @@ class FetchAssets implements ShouldQueue
     {
         foreach($names as $name)
         {
-            $asset = \App\Asset::firstOrCreate(['name' => $name]);
+            $asset = \App\Asset::firstOrCreate(['name' => $name], ['slug' => $name]);
 
             if($asset->wasRecentlyCreated && $update)
             {
@@ -86,7 +86,7 @@ class FetchAssets implements ShouldQueue
         {
             foreach($chunk as $name)
             {
-                $assets[] = ['name' => $name];
+                $assets[] = ['name' => $name, 'slug' => $name];
             }
 
             \App\Asset::insert($assets);

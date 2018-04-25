@@ -108,7 +108,7 @@ class UpdateMarket implements ShouldQueue
                         'base_remaining' => $order[$base.'_remaining'],
                         'quote_quantity' => $order[$quote.'_quantity'],
                         'quote_remaining' => $order[$quote.'_remaining'],
-                        'exchange_rate' => $this->getExchangeRate($type, $base_asset, $order[$base.'_quantity'], $order[$quote.'_quantity']),
+                        'exchange_rate' => $this->getExchangeRate($type, $base_asset, $order[$base.'_quantity'], $quote_asset, $order[$quote.'_quantity']),
                     ]);
 
                     \App\Jobs\UpdateBlock::dispatch($order['block_index']);
@@ -121,7 +121,7 @@ class UpdateMarket implements ShouldQueue
         \App\Jobs\UpdateOrderMatches::dispatch($this->market);
     }
 
-    private function getExchangeRate($type, $base_asset, $base_quantity, $quote_quantity)
+    private function getExchangeRate($type, $base_asset, $base_quantity, $quote_asset, $quote_quantity)
     {
         if($base_quantity == 0) return 0;
 
@@ -129,7 +129,7 @@ class UpdateMarket implements ShouldQueue
 
         $method = 'buy' == $type ? PHP_ROUND_HALF_DOWN : PHP_ROUND_HALF_UP;
 
-        if(! $base_asset->divisible) $exchange_rate = fromSatoshi($exchange_rate);
+        if(! $base_asset->divisible && $quote_asset->divisible) $exchange_rate = fromSatoshi($exchange_rate);
 
         return round($exchange_rate, 8, $method);
     }

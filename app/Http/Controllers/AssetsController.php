@@ -52,9 +52,13 @@ class AssetsController extends Controller
      */
     public function show(Request $request, $slug)
     {
-        $asset = \Cache::remember('assets_show_' . $slug, 360, function() use($slug) {
-            return \App\Asset::whereName($slug)->first();
-        });
+        $asset = \App\Asset::whereSlug($slug)->first();
+
+        if(! $asset)
+        {
+            $asset = \App\Asset::where('long_name', '=', $slug)->orWhere('name', '=', $slug)->first();
+            return redirect(route('assets.show', ['asset' => $asset->slug]));
+        }
 
         return view('assets.show', compact('asset', 'request'));
     }

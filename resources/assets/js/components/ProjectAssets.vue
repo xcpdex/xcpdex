@@ -21,8 +21,8 @@
     </thead>
     <tbody style="font-size: 16px">
       <tr v-for="asset in assets">
-        <td style="vertical-align: middle"><a :href="'https://xcpdex.com/asset/' + asset.name"><img :src="asset.image_url" width="70" :alt="asset.name" /></a></td>
-        <td style="vertical-align: middle"><a :href="'https://xcpdex.com/asset/' + asset.name">{{ asset.name }}</a></td>
+        <td style="vertical-align: middle"><a :href="'https://xcpdex.com/asset/' + asset.slug"><img :src="asset.image_url" width="70" :alt="asset.slug" /></a></td>
+        <td style="vertical-align: middle"><a :href="'https://xcpdex.com/asset/' + asset.slug">{{ asset.display_name }}</a></td>
         <td style="vertical-align: middle">{{ asset.divisible ? asset.issuance_normalized : asset.issuance_normalized | formatted }}</td>
         <td style="vertical-align: middle">{{ asset.volume_total_usd | formatDollars }}</td>
         <td style="vertical-align: middle">{{ asset.orders_total }}</td>

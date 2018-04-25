@@ -51,7 +51,7 @@ class SearchController extends Controller
         ]);
 
         return \Cache::remember('api_search_' . $request->q, 360, function() use($request) {
-            $assets = \App\Asset::where('name', 'like', $request->q . '%')
+            $assets = \App\Asset::where('slug', 'like', $request->q . '%')
                 ->orderBy('volume_total_usd', 'desc')
                 ->take(10)
                 ->get();

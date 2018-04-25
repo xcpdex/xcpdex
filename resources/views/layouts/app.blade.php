@@ -81,6 +81,11 @@
           </h6>
           <ul class="nav flex-column">
             <li class="nav-item">
+              <a class="nav-link" href="{{ url(route('assets.index')) }}">
+                Assets
+              </a>
+            </li>
+            <li class="nav-item">
               <a class="nav-link" href="{{ url(route('markets.index')) }}">
                 Markets
               </a>

@@ -30,9 +30,9 @@
             </tr>
             <tr class="bg-light">
               @if(isset($asset->meta['burned']) && $asset->meta['burned'])
-              <td colspan="4">Supply: <b title="{{ $asset->issuance_normalized - $asset->meta['burned'] }} {{ $asset->name }}">{{ number_format($asset->issuance_normalized - $asset->meta['burned']) }}</b> &nbsp; <small>Burned: <b title="{{ $asset->meta['burned'] }} {{ $asset->name }}">{{ number_format($asset->meta['burned']) }}</b></small></td>
+              <td colspan="4">Supply: <b title="{{ $asset->issuance_normalized - $asset->meta['burned'] }} {{ $asset->display_name }}">{{ number_format($asset->issuance_normalized - $asset->meta['burned']) }}</b> &nbsp; <small>Burned: <b title="{{ $asset->meta['burned'] }} {{ $asset->display_name }}">{{ number_format($asset->meta['burned']) }}</b></small></td>
               @else
-              <td colspan="4">Supply: <b title="{{ $asset->issuance_normalized }} {{ $asset->name }}">{{ number_format($asset->issuance_normalized) }} {{ $asset->name }}</b></td>
+              <td colspan="4">Supply: <b title="{{ $asset->issuance_normalized }} {{ $asset->display_name }}">{{ number_format($asset->issuance_normalized) }} {{ $asset->display_name }}</b></td>
               @endif
             </tr>
           </tbody>
@@ -63,6 +63,6 @@
     <img src="{{ $asset->image_url }}" alt="{{ $asset->name }}" width="100%" height="auto" class="mb-3 d-block d-sm-none" />
   @endif
 
-  <asset-markets asset="{{ $asset->name }}" filter="{{ $request->input('filter', 'index') }}" order_by="{{ $request->input('order_by', 'quote_volume_usd_month') }}" direction="{{ $request->input('direction', 'desc') }}"></asset-markets>
+  <asset-markets asset="{{ $asset->slug }}" filter="{{ $request->input('filter', 'index') }}" order_by="{{ $request->input('order_by', 'quote_volume_usd_month') }}" direction="{{ $request->input('direction', 'desc') }}"></asset-markets>
 
 @endsection

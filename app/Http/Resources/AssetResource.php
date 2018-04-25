@@ -16,7 +16,7 @@ class AssetResource extends Resource
     {
         return [
             'name' => $this->display_name,
-            'slug' => $this->name,
+            'slug' => $this->slug,
         ];
     }
 }

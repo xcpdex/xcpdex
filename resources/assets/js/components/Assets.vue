@@ -14,9 +14,9 @@
     </thead>
     <tbody>
       <tr v-for="asset in assets">
-        <td><a :href="'https://xcpdex.com/asset/' + asset.name"><img :src="asset.display_icon_url" height="22" :alt="asset.name" /></a> <a :href="'https://xcpdex.com/asset/' + asset.name">{{ asset.name }}</a></td>
+        <td><a :href="'https://xcpdex.com/asset/' + asset.slug"><img :src="asset.display_icon_url" height="22" :alt="asset.slug" /></a> <a :href="'https://xcpdex.com/asset/' + asset.slug">{{ asset.slug }}</a></td>
         <td class="text-right">{{ asset.volume_total_usd | formatDollars }}</td>
-        <td class="text-right">{{ asset.issuance_normalized }}</td>
+        <td class="text-right">{{ asset.issuance_normalized | formatted }}</td>
         <td class="text-right">{{ asset.orders_total }}</td>
         <td class="text-right">{{ asset.order_matches_total }}</td>
       </tr>

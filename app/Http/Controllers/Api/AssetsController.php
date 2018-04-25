@@ -20,8 +20,6 @@ class AssetsController extends Controller
                 ->orderBy('orders_total', 'desc')
                 ->paginate(30);
         });
-
-        return view('assets.index', compact('assets'));
     }
 
     /**

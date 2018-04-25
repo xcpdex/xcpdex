@@ -44,6 +44,7 @@ class UpdateAsset implements ShouldQueue
 
             $this->asset->update([
                 'long_name' => $issuance['asset_longname'],
+                'slug' => $issuance['asset_longname'] ? $issuance['asset_longname'] : $this->asset->name,
                 'description' => str_limit($issuance['description'], 252),
                 'issuance' => $total_issuance,
                 'divisible' => $is_divisible,

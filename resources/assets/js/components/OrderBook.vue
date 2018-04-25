@@ -55,8 +55,8 @@
       .then(response => {
         var json = response.data
         this.orders = this.orders.concat(this.side == 'buy' ? json.buy_orders : json.sell_orders)
-        this.baseAsset = json.base_asset.name
-        this.quoteAsset = json.quote_asset.name
+        this.baseAsset = json.base_asset.long_name ? json.base_asset.long_name : json.base_asset.name
+        this.quoteAsset = json.quote_asset.long_name ? json.quote_asset.long_name : json.quote_asset.name
       })
     },
 

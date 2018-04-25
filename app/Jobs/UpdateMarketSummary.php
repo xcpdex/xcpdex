@@ -65,6 +65,9 @@ class UpdateMarketSummary implements ShouldQueue
         $order_matches_total = $this->market->orderMatches->count();
         $last_traded_at = $this->market->lastMatch ? $this->market->lastMatch->block->mined_at : null;
 
+        if($quote_volume_usd > 99999999999999999) $quote_volume_usd = 99999999999999999;
+        if($quote_market_cap_usd > 99999999999999999) $quote_market_cap_usd = 99999999999999999;
+
         $this->market->update([
             'base_volume' => $base_volume,
             'last_price_usd' => $last_price_usd,
